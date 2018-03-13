@@ -1,6 +1,6 @@
 use rocket_contrib::Json;
 
-use package::{PACKAGE_LIST, Package};
+use package::{Package, PACKAGE_LIST};
 
 #[get("/pull")]
 fn pull() -> Json<Vec<Package>> {

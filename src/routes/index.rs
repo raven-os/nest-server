@@ -5,7 +5,8 @@ use rocket_contrib::Template;
 #[get("/")]
 fn index() -> Template {
     let mut context: HashMap<String, String> = HashMap::new();
-    let version = format!("{}.{}.{}",
+    let version = format!(
+        "{}.{}.{}",
         env!("CARGO_PKG_VERSION_MAJOR"),
         env!("CARGO_PKG_VERSION_MINOR"),
         env!("CARGO_PKG_VERSION_PATCH"),

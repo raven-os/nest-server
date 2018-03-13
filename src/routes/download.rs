@@ -46,4 +46,3 @@ fn download(category: CategoryName, package: PackageName) -> Option<NamedFile> {
     let path = format!("packages/{}/{}", category.0, package.0);
     NamedFile::open(&path).ok()
 }
-
