@@ -42,7 +42,7 @@ impl<'a> FromParam<'a> for CategoryName {
 }
 
 #[get("/download/<category>/<package>")]
-#[allow(needless_pass_by_value)]
+#[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
 fn download(category: CategoryName, package: PackageName) -> Option<NamedFile> {
     let path = format!("packages/{}/{}", category.0, package.0);
     NamedFile::open(&path).ok()
