@@ -5,8 +5,8 @@ use rocket::request::FromParam;
 use rocket::response::NamedFile;
 
 lazy_static! {
-    static ref REGEX_CATEGORY_NAME: Regex = Regex::new(r"^[a-z\-]$").unwrap();
-    static ref REGEX_PACKAGE_NAME: Regex = Regex::new(r"^[a-z]$").unwrap();
+    static ref REGEX_CATEGORY_NAME: Regex = Regex::new(r"^[a-z\-]+$").unwrap();
+    static ref REGEX_PACKAGE_NAME: Regex = Regex::new(r"^[a-z]+$").unwrap();
 }
 
 #[derive(Debug, Clone)]
