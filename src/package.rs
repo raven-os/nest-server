@@ -34,8 +34,10 @@ pub fn load_packages() -> Result<(), Box<Error>> {
 
     for (name, category) in toml.as_table().unwrap().iter() {
         for (_, value) in category.as_table().unwrap().iter() {
-            let package = Package::new(&name.to_string(),
-                                       &mut value.to_string().trim_matches('"').to_string());
+            let package = Package::new(
+                &name.to_string(),
+                &mut value.to_string().trim_matches('"').to_string()
+            );
             PACKAGE_LIST.lock().unwrap().push(package);
         }
     }
