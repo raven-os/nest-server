@@ -1,17 +1,11 @@
-[[package]]
+[dash]
+    category = "shell"
 
-    [dash]
-        category = "shell"
-        name = "dash"
+[gcc-base]
+    category = "sys-lib"
 
-    [gcc]
-        category = "sys-lib"
-        name = "gcc-base"
+[libc]
+    category = "sys-lib"
 
-    [libc]
-        category = "sys-lib"
-        name = "libc"
-
-    [libgcc]
-        category = "sys-lib"
-        name = "libgcc"
+[libgcc]
+    category = "sys-lib"
