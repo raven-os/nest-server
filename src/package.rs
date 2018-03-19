@@ -36,7 +36,7 @@ pub fn load_packages() -> Result<(), Box<Error>> {
         for (_, value) in category.as_table().unwrap().iter() {
             let package = Package::new(
                 &name.to_string(),
-                &mut value.to_string().trim_matches('"').to_string()
+                &mut value.to_string().trim_matches('"').to_string(),
             );
             PACKAGE_LIST.lock().unwrap().push(package);
         }
