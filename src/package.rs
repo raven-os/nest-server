@@ -26,10 +26,10 @@ lazy_static! {
 
 pub fn load_packages() -> Result<(), Box<Error>> {
     let mut file = File::open("packages.toml")?;
-        
+
     let mut packages = String::new();
     file.read_to_string(&mut packages)?;
-    
+
     let toml = packages.parse::<Value>()?;
 
     for (name, category) in toml.as_table().unwrap().iter() {
