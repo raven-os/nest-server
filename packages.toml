@@ -1,0 +1,11 @@
+[dash]
+    category = "shell"
+
+[gcc-base]
+    category = "sys-lib"
+
+[libc]
+    category = "sys-lib"
+
+[libgcc]
+    category = "sys-lib"

@@ -26,12 +26,20 @@ extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
+extern crate toml;
 
 mod package;
 mod routes;
 
 fn main() {
     use rocket_contrib::Template;
+
+    if let Err(e) = package::load_packages() {
+        use std::process;
+
+        eprintln!("error: {}", e);
+        process::exit(1);
+    }
 
     rocket::ignite()
         .mount(
