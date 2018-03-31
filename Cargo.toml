@@ -1,5 +1,5 @@
 [package]
-name = "nest-repository"
+name = "nest-server"
 version = "0.1.0"
 authors = ["Benjamin Grange <benjamin.grange@epitech.eu>"]
 
@@ -15,4 +15,4 @@ regex = "0.2"
 [dependencies.rocket_contrib]
 version = "0.3"
 default-features = false
-features = ["json", "handlebars_templates"]
+features = ["json"]

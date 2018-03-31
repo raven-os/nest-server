@@ -31,8 +31,6 @@ mod package;
 mod routes;
 
 fn main() {
-    use rocket_contrib::Template;
-
     rocket::ignite()
         .mount(
             "/",
@@ -42,6 +40,5 @@ fn main() {
                 routes::download::download,
             ],
         )
-        .attach(Template::fairing())
         .launch();
 }

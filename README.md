@@ -1,13 +1,13 @@
-# Nest-Repository [![Build Status](https://travis-ci.org/raven-os/nest-repository.svg?branch=master)](https://travis-ci.org/raven-os/nest-repository)
+# Nest-Server [![Build Status](https://travis-ci.org/raven-os/nest-server.svg?branch=master)](https://travis-ci.org/raven-os/nest-server)
 
 A server providing packages for Nest.
 
 ## Build dependencies
 * rustup, with the latest nightly toolchain available
 
-## Building Nest-Repository
+## Building Nest-Server
 
-Compiling Nest-Repository is pretty straightforward:
+Compiling Nest-Server is pretty straightforward:
 
 ```bash
 cargo build
@@ -15,7 +15,7 @@ cargo build
 
 ## Running tests
 
-If you want to be sure everything went correctly when compiling Nest-Repository, you can run the tests:
+If you want to be sure everything went correctly when compiling Nest-Server, you can run the tests:
 
 ```bash
 cargo test
