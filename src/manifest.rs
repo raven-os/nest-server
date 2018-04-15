@@ -15,7 +15,7 @@ impl Manifest {
             metadatas: Metadatas {
                 name: name.to_string(),
                 category: category.to_string(),
-            }
+            },
         }
     }
 }
