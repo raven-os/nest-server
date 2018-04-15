@@ -27,8 +27,8 @@ extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
 
-mod package;
-mod routes;
+pub mod manifest;
+pub mod routes;
 
 fn main() {
     rocket::ignite()
