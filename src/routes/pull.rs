@@ -1,8 +1,8 @@
 use rocket_contrib::Json;
 
-use package::{Package, PACKAGE_LIST};
+use manifest::{Manifest, MANIFEST_LIST};
 
 #[get("/pull")]
-fn pull() -> Json<Vec<Package>> {
-    Json(PACKAGE_LIST.clone())
+fn pull() -> Json<Vec<Manifest>> {
+    Json(MANIFEST_LIST.clone())
 }
