@@ -1,18 +1,18 @@
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Hash, Debug, Default)]
-pub struct Metadatas {
+pub struct Metadata {
     name: String,
     category: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Hash, Debug, Default)]
 pub struct Manifest {
-    metadatas: Metadatas,
+    metadata: Metadata,
 }
 
 impl Manifest {
     pub fn new(name: &str, category: &str) -> Manifest {
         Manifest {
-            metadatas: Metadatas {
+            metadata: Metadata {
                 name: name.to_string(),
                 category: category.to_string(),
             },
