@@ -21,16 +21,44 @@
 
 #[macro_use]
 extern crate lazy_static;
-extern crate regex;
 extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
+extern crate failure;
+extern crate glob;
+extern crate semver;
+extern crate toml;
 
 pub mod manifest;
 pub mod routes;
 
+use std::env;
+use std::process;
+
+lazy_static! {
+    static ref RAVEN_REPOSITORY_NAME: String = {
+        if let Ok(s) = env::var("RAVEN_REPOSITORY_NAME") {
+            s
+        } else {
+            eprintln!("error: the RAVEN_REPOSITORY_NAME variable is not set.");
+            process::exit(1);
+        }
+    };
+    static ref RAVEN_REPOSITORY_PATH: String = {
+        if let Ok(s) = env::var("RAVEN_REPOSITORY_PATH") {
+            s
+        } else {
+            eprintln!("error: the RAVEN_REPOSITORY_PATH variable is not set.");
+            process::exit(1);
+        }
+    };
+}
+
 fn main() {
+    lazy_static::initialize(&RAVEN_REPOSITORY_NAME);
+    lazy_static::initialize(&RAVEN_REPOSITORY_PATH);
+
     rocket::ignite()
         .mount(
             "/",

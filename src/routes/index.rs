@@ -1,9 +1,12 @@
 use rocket::response::content::Html;
 
+use RAVEN_REPOSITORY_NAME;
+
 #[get("/")]
 fn index() -> Html<String> {
     Html(format!(
-        "Raven Stable Server v{}.{}.{}",
+        "Raven \"{}\" v{}.{}.{}",
+        *RAVEN_REPOSITORY_NAME,
         env!("CARGO_PKG_VERSION_MAJOR"),
         env!("CARGO_PKG_VERSION_MINOR"),
         env!("CARGO_PKG_VERSION_PATCH"),
