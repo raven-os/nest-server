@@ -1,6 +1,6 @@
+use std::cmp::Ordering;
 use std::fs::File;
 use std::io::Read;
-use std::cmp::Ordering;
 
 use failure::Error;
 use glob;
@@ -62,7 +62,7 @@ pub fn search() -> Result<Json<Vec<Manifest>>, Error> {
         manifests.push(toml::from_str(&s)?);
     }
 
-    let sorter : fn(&Manifest, &Manifest) -> Ordering;
+    let sorter: fn(&Manifest, &Manifest) -> Ordering;
     sorter = |a, b| b.metadata().created_at().cmp(&a.metadata().created_at()); // Default sort by create_at
     manifests.sort_by(sorter);
 
@@ -86,7 +86,7 @@ fn search_filter(manifest_filter: Option<ManifestFilter>) -> Result<Json<Vec<Man
         manifests.push(toml::from_str(&s)?);
     }
 
-    let mut sorter : fn(&Manifest, &Manifest) -> Ordering;
+    let mut sorter: fn(&Manifest, &Manifest) -> Ordering;
     sorter = |a, b| b.metadata().created_at().cmp(&a.metadata().created_at()); // Default sort by create_at
 
     if let Some(filter) = manifest_filter {
@@ -106,19 +106,31 @@ fn search_filter(manifest_filter: Option<ManifestFilter>) -> Result<Json<Vec<Man
             manifests.retain(|ref x: &Manifest| x.metadata().created_at().contains(created_at));
         }
         if let Some(order_by) = filter.order_by() {
-          match order_by.as_ref() {
-            "name_asc" => sorter = |a, b| a.metadata().name().cmp(&b.metadata().name()),
-            "name_desc" => sorter = |a, b| b.metadata().name().cmp(&a.metadata().name()),
-            "category_asc" => sorter = |a, b| a.metadata().category().cmp(&b.metadata().category()),
-            "category_desc" => sorter = |a, b| b.metadata().category().cmp(&a.metadata().category()),
-            "description_asc" => sorter = |a, b| a.metadata().description().cmp(&b.metadata().description()),
-            "description_desc" => sorter = |a, b| b.metadata().description().cmp(&a.metadata().description()),
-            "tags_asc" => sorter = |a, b| a.metadata().tags().cmp(&b.metadata().tags()),
-            "tags_desc" => sorter = |a, b| b.metadata().tags().cmp(&a.metadata().tags()),
-            "created_at_asc" => sorter = |a, b| a.metadata().created_at().cmp(&b.metadata().created_at()),
-            "created_at_desc" => sorter = |a, b| b.metadata().created_at().cmp(&a.metadata().created_at()),
-            _ => ()
-          }
+            match order_by.as_ref() {
+                "name_asc" => sorter = |a, b| a.metadata().name().cmp(&b.metadata().name()),
+                "name_desc" => sorter = |a, b| b.metadata().name().cmp(&a.metadata().name()),
+                "category_asc" => {
+                    sorter = |a, b| a.metadata().category().cmp(&b.metadata().category())
+                }
+                "category_desc" => {
+                    sorter = |a, b| b.metadata().category().cmp(&a.metadata().category())
+                }
+                "description_asc" => {
+                    sorter = |a, b| a.metadata().description().cmp(&b.metadata().description())
+                }
+                "description_desc" => {
+                    sorter = |a, b| b.metadata().description().cmp(&a.metadata().description())
+                }
+                "tags_asc" => sorter = |a, b| a.metadata().tags().cmp(&b.metadata().tags()),
+                "tags_desc" => sorter = |a, b| b.metadata().tags().cmp(&a.metadata().tags()),
+                "created_at_asc" => {
+                    sorter = |a, b| a.metadata().created_at().cmp(&b.metadata().created_at())
+                }
+                "created_at_desc" => {
+                    sorter = |a, b| b.metadata().created_at().cmp(&a.metadata().created_at())
+                }
+                _ => (),
+            }
         }
     }
     manifests.sort_by(sorter);
