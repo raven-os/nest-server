@@ -22,9 +22,9 @@
 
 #[macro_use]
 extern crate lazy_static;
+extern crate dotenv;
 extern crate rocket;
 extern crate rocket_contrib;
-extern crate dotenv;
 #[macro_use]
 extern crate serde_derive;
 extern crate failure;
@@ -68,10 +68,9 @@ fn main() {
             routes![
                 routes::index::index,
                 routes::pull::pull,
-                routes::pull::search,
-                routes::pull::search_filter,
+                routes::search::search,
+                routes::search::search_filter,
                 routes::download::download,
             ],
-        )
-        .launch();
+        ).launch();
 }

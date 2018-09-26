@@ -11,6 +11,18 @@ pub struct Metadata {
     version: Version,
 }
 
+impl Metadata {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+    pub fn category(&self) -> &str {
+        &self.category
+    }
+    pub fn version(&self) -> &Version {
+        &self.version
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Debug)]
 pub struct Manifest {
     metadata: Metadata,
@@ -18,14 +30,10 @@ pub struct Manifest {
     dependencies: HashMap<PackageFullName, VersionReq>,
 }
 
-impl Metadata {
-    pub fn name(&self) -> &str { &self.name }
-    pub fn category(&self) -> &str { &self.category }
-    pub fn version(&self) -> &Version { &self.version }
-}
-
 impl Manifest {
-    pub fn metadata(&self) -> &Metadata { &self.metadata }
+    pub fn metadata(&self) -> &Metadata {
+        &self.metadata
+    }
 }
 
 /*
