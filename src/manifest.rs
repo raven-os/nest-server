@@ -9,6 +9,9 @@ pub struct Metadata {
     name: String,
     category: String,
     version: Version,
+    description: String,
+    tags: String,
+    created_at: String,
 }
 
 impl Metadata {
@@ -20,6 +23,15 @@ impl Metadata {
     }
     pub fn version(&self) -> &Version {
         &self.version
+    }
+    pub fn description(&self) -> &str {
+        &self.description
+    }
+    pub fn tags(&self) -> &str {
+        &self.tags
+    }
+    pub fn created_at(&self) -> &str {
+        &self.created_at
     }
 }
 
