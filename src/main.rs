@@ -17,12 +17,14 @@
 #![cfg_attr(feature = "cargo-clippy", warn(wrong_pub_self_convention))]
 // Features
 #![feature(plugin)]
+#![feature(custom_derive)]
 #![plugin(rocket_codegen)]
 
 #[macro_use]
 extern crate lazy_static;
 extern crate rocket;
 extern crate rocket_contrib;
+extern crate dotenv;
 #[macro_use]
 extern crate serde_derive;
 extern crate failure;
@@ -56,6 +58,7 @@ lazy_static! {
 }
 
 fn main() {
+    dotenv::dotenv().ok();
     lazy_static::initialize(&RAVEN_REPOSITORY_NAME);
     lazy_static::initialize(&RAVEN_REPOSITORY_PATH);
 
@@ -65,6 +68,8 @@ fn main() {
             routes![
                 routes::index::index,
                 routes::pull::pull,
+                routes::pull::search,
+                routes::pull::search_filter,
                 routes::download::download,
             ],
         )
