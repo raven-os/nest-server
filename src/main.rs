@@ -72,5 +72,6 @@ fn main() {
                 routes::search::search_filter,
                 routes::download::download,
             ],
-        ).launch();
+        )
+        .launch();
 }

@@ -9,27 +9,32 @@ pub struct Metadata {
     name: String,
     category: String,
     version: Version,
-    description: String,
-    tags: String,
-    created_at: String,
+    description: String, // not yet ideal type
+    tags: String,        // not yet ideal type
+    created_at: String,  // not yet ideal type
 }
 
 impl Metadata {
     pub fn name(&self) -> &str {
         &self.name
     }
+
     pub fn category(&self) -> &str {
         &self.category
     }
+
     pub fn version(&self) -> &Version {
         &self.version
     }
+
     pub fn description(&self) -> &str {
         &self.description
     }
+
     pub fn tags(&self) -> &str {
         &self.tags
     }
+
     pub fn created_at(&self) -> &str {
         &self.created_at
     }
@@ -87,6 +92,6 @@ lazy_static! {
         Manifest::new("libpcre",        "sys-lib",       Version::parse("1.0.0").unwrap()),
         Manifest::new("libselinux",     "sys-lib",       Version::parse("1.0.0").unwrap()),
 */
-    ];
+];
 }
 */
