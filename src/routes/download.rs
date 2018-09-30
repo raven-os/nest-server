@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
+use crate::RAVEN_REPOSITORY_PATH;
 use rocket::response::NamedFile;
-use RAVEN_REPOSITORY_PATH;
 
 #[get("/download/<path..>")]
 #[cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]

@@ -5,6 +5,7 @@
 #![warn(unused_extern_crates)]
 #![warn(unused_import_braces)]
 #![warn(unused_qualifications)]
+#![allow(elided_lifetimes_in_paths)] // disable warnings for rocket in rust 2018
 // Clippy
 #![cfg_attr(feature = "cargo-clippy", warn(fallible_impl_from))]
 #![cfg_attr(feature = "cargo-clippy", warn(int_plus_one))]
@@ -22,15 +23,10 @@
 
 #[macro_use]
 extern crate lazy_static;
-extern crate dotenv;
-extern crate rocket;
-extern crate rocket_contrib;
+use dotenv;
+use rocket;
 #[macro_use]
 extern crate serde_derive;
-extern crate failure;
-extern crate glob;
-extern crate semver;
-extern crate toml;
 
 pub mod manifest;
 pub mod routes;
@@ -72,5 +68,6 @@ fn main() {
                 routes::search::search_filter,
                 routes::download::download,
             ],
-        ).launch();
+        )
+        .launch();
 }
