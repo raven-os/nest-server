@@ -67,6 +67,7 @@ fn main() {
                 routes::search::search,
                 routes::search::search_filter,
                 routes::download::download,
+                routes::info::info,
             ],
         )
         .launch();
