@@ -6,8 +6,8 @@ use glob;
 use rocket_contrib::Json;
 use toml;
 
-use manifest::Manifest;
-use RAVEN_REPOSITORY_PATH;
+use crate::manifest::Manifest;
+use crate::RAVEN_REPOSITORY_PATH;
 
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Debug, FromForm)]
 pub struct ManifestFilter {

@@ -1,6 +1,6 @@
 use rocket::response::content::Html;
 
-use RAVEN_REPOSITORY_NAME;
+use crate::RAVEN_REPOSITORY_NAME;
 
 #[get("/")]
 fn index() -> Html<String> {
