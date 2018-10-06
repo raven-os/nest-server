@@ -6,6 +6,7 @@ use glob;
 use rocket_contrib::Json;
 use toml;
 
+use crate::manifest::FormDateTime;
 use crate::manifest::Manifest;
 use crate::RAVEN_REPOSITORY_PATH;
 
@@ -16,7 +17,7 @@ pub struct ManifestFilter {
     pub version: Option<String>,
     pub description: Option<String>, // not yet ideal type
     pub tags: Option<String>,        // not yet ideal type
-    pub created_at: Option<String>,  // not yet ideal type
+    pub created_at: Option<FormDateTime>,
     pub order_by: Option<String>,
 }
 
@@ -41,7 +42,7 @@ impl ManifestFilter {
         &self.tags
     }
 
-    pub fn created_at(&self) -> &Option<String> {
+    pub fn created_at(&self) -> &Option<FormDateTime> {
         &self.created_at
     }
 
@@ -98,9 +99,6 @@ fn search_filter(manifest_filter: Option<ManifestFilter>) -> Result<Json<Vec<Man
         }
         if let Some(tags) = filter.tags() {
             manifests.retain(|ref x: &Manifest| x.metadata().tags().contains(tags));
-        }
-        if let Some(created_at) = filter.created_at() {
-            manifests.retain(|ref x: &Manifest| x.metadata().created_at().contains(created_at));
         }
         if let Some(order_by) = filter.order_by() {
             match order_by.as_ref() {
