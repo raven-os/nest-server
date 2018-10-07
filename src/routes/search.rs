@@ -6,7 +6,10 @@ use glob;
 use rocket_contrib::Json;
 use toml;
 
-use crate::manifest::FormDateTime;
+use chrono::{DateTime, Utc};
+use rocket::http::RawStr;
+use rocket::request::FromFormValue;
+
 use crate::manifest::Manifest;
 use crate::RAVEN_REPOSITORY_PATH;
 
@@ -48,6 +51,20 @@ impl ManifestFilter {
 
     pub fn order_by(&self) -> &Option<String> {
         &self.order_by
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Hash, Debug)]
+pub struct FormDateTime(DateTime<Utc>);
+
+impl<'v> FromFormValue<'v> for FormDateTime {
+    type Error = &'v RawStr;
+
+    fn from_form_value(form_value: &'v RawStr) -> Result<FormDateTime, &'v RawStr> {
+        match form_value.parse::<DateTime<Utc>>() {
+            Ok(date) => Ok(FormDateTime(date)),
+            _ => Err(form_value),
+        }
     }
 }
 

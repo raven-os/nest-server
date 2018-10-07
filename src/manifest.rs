@@ -1,25 +1,9 @@
 use chrono::{DateTime, Utc};
-use rocket::http::RawStr;
-use rocket::request::FromFormValue;
 use semver::{Version, VersionReq};
 use std::collections::HashMap;
 
 pub type PackageId = String;
 pub type PackageFullName = String;
-
-#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Hash, Debug)]
-pub struct FormDateTime(DateTime<Utc>);
-
-impl<'v> FromFormValue<'v> for FormDateTime {
-    type Error = &'v RawStr;
-
-    fn from_form_value(form_value: &'v RawStr) -> Result<FormDateTime, &'v RawStr> {
-        match form_value.parse::<DateTime<Utc>>() {
-            Ok(date) => Ok(FormDateTime(date)),
-            _ => Err(form_value),
-        }
-    }
-}
 
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Hash, Debug)]
 pub struct Metadata {
