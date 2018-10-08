@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use semver::{Version, VersionReq};
 use std::collections::HashMap;
 
@@ -11,7 +12,7 @@ pub struct Metadata {
     version: Version,
     description: String, // not yet ideal type
     tags: String,        // not yet ideal type
-    created_at: String,  // not yet ideal type
+    created_at: DateTime<Utc>,
 }
 
 impl Metadata {
@@ -35,7 +36,7 @@ impl Metadata {
         &self.tags
     }
 
-    pub fn created_at(&self) -> &str {
+    pub fn created_at(&self) -> &DateTime<Utc> {
         &self.created_at
     }
 }
@@ -52,46 +53,3 @@ impl Manifest {
         &self.metadata
     }
 }
-
-/*
-
-impl Manifest {
-    pub fn new(name: &str, category: &str, version: &str) -> Manifest {
-        Manifest {
-            metadata: Metadata {
-                name: name.to_string(),
-                category: category.to_string(),
-                version: Version::parse(version).unwrap(),
-            },
-            dependencies: HashMap::new(),
-        }
-    }
-}
-// This is here for debugging purposes until we have a nice database
-lazy_static! {
-    #[derive(Debug)]
-    pub static ref MANIFEST_LIST: Vec<Manifest> = vec![
-        Manifest::new("libc",           "sys-lib",       "1.0.0"),
-        Manifest::new("libc",           "sys-lib",       "1.0.1"),
-        Manifest::new("libc",           "sys-lib",       "1.2.0"),
-        Manifest::new("libc-dev",       "sys-lib",       "1.2.0")
-            .add_dependencie("stable::sys-lib/libc#=1.2.0"),
-        Manifest::new("libgcc",         "sys-lib",       "1.0.0"),
-        Manifest::new("gcc-base",       "sys-lib",       "1.0.0"),
-        Manifest::new("dash",           "shell",         "1.0.0")
-            .add_dependencie("stable::sys-lib/libc#>=1.0.0")
-            .add_dependencie("stable::sys-lib/libgcc#>=1.0.0"),
-        Manifest::new("gcc",           "sys-dev",         "1.0.0")
-            .add_dependencie("stable::sys-lib/libc-dev#>=1.0.0")
-            .add_dependencie("stable::sys-lib/libgcc#>=1.0.0")
-            .add_dependencie("stable::sys-lib/libc#>=1.0.0")
-/*
-        Manifest::new("coreutils",      "sys-bin",       Version::parse("1.0.0").unwrap()),
-        Manifest::new("libacl",         "sys-lib",       Version::parse("1.0.0").unwrap()),
-        Manifest::new("libattr",        "sys-lib",       Version::parse("1.0.0").unwrap()),
-        Manifest::new("libpcre",        "sys-lib",       Version::parse("1.0.0").unwrap()),
-        Manifest::new("libselinux",     "sys-lib",       Version::parse("1.0.0").unwrap()),
-*/
-];
-}
-*/

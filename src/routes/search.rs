@@ -6,6 +6,10 @@ use glob;
 use rocket_contrib::Json;
 use toml;
 
+use chrono::{DateTime, Utc};
+use rocket::http::RawStr;
+use rocket::request::FromFormValue;
+
 use crate::manifest::Manifest;
 use crate::RAVEN_REPOSITORY_PATH;
 
@@ -16,7 +20,7 @@ pub struct ManifestFilter {
     pub version: Option<String>,
     pub description: Option<String>, // not yet ideal type
     pub tags: Option<String>,        // not yet ideal type
-    pub created_at: Option<String>,  // not yet ideal type
+    pub created_at: Option<FormDateTime>,
     pub order_by: Option<String>,
 }
 
@@ -41,12 +45,26 @@ impl ManifestFilter {
         &self.tags
     }
 
-    pub fn created_at(&self) -> &Option<String> {
+    pub fn created_at(&self) -> &Option<FormDateTime> {
         &self.created_at
     }
 
     pub fn order_by(&self) -> &Option<String> {
         &self.order_by
+    }
+}
+
+#[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Hash, Debug)]
+pub struct FormDateTime(DateTime<Utc>);
+
+impl<'v> FromFormValue<'v> for FormDateTime {
+    type Error = &'v RawStr;
+
+    fn from_form_value(form_value: &'v RawStr) -> Result<FormDateTime, &'v RawStr> {
+        match form_value.parse::<DateTime<Utc>>() {
+            Ok(date) => Ok(FormDateTime(date)),
+            _ => Err(form_value),
+        }
     }
 }
 
@@ -98,9 +116,6 @@ fn search_filter(manifest_filter: Option<ManifestFilter>) -> Result<Json<Vec<Man
         }
         if let Some(tags) = filter.tags() {
             manifests.retain(|ref x: &Manifest| x.metadata().tags().contains(tags));
-        }
-        if let Some(created_at) = filter.created_at() {
-            manifests.retain(|ref x: &Manifest| x.metadata().created_at().contains(created_at));
         }
         if let Some(order_by) = filter.order_by() {
             match order_by.as_ref() {

@@ -1,5 +1,5 @@
 pub mod download;
 pub mod index;
-pub mod info;
+pub mod metadata;
 pub mod pull;
 pub mod search;

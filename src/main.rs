@@ -25,9 +25,11 @@
 extern crate lazy_static;
 use dotenv;
 use rocket;
+use rocket_cors::AllowedOrigins;
 #[macro_use]
 extern crate serde_derive;
 
+pub mod filename;
 pub mod manifest;
 pub mod routes;
 
@@ -58,6 +60,11 @@ fn main() {
     lazy_static::initialize(&RAVEN_REPOSITORY_NAME);
     lazy_static::initialize(&RAVEN_REPOSITORY_PATH);
 
+    let options = rocket_cors::Cors {
+        allowed_origins: AllowedOrigins::all(),
+        ..Default::default()
+    };
+
     rocket::ignite()
         .mount(
             "/",
@@ -67,8 +74,9 @@ fn main() {
                 routes::search::search,
                 routes::search::search_filter,
                 routes::download::download,
-                routes::info::info,
+                routes::metadata::metadata,
             ],
         )
+        .attach(options)
         .launch();
 }
