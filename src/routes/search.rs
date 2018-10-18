@@ -1,14 +1,14 @@
 use std::fs::File;
 use std::io::Read;
 
+use chrono::{DateTime, Utc};
 use failure::Error;
 use glob;
-use rocket_contrib::Json;
-use toml;
-
-use chrono::{DateTime, Utc};
 use rocket::http::RawStr;
 use rocket::request::FromFormValue;
+use rocket_contrib::Json;
+use serde_derive::{Deserialize, Serialize};
+use toml;
 
 use crate::manifest::Manifest;
 use crate::RAVEN_REPOSITORY_PATH;

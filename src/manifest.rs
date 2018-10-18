@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 use chrono::{DateTime, Utc};
 use semver::{Version, VersionReq};
-use std::collections::HashMap;
+use serde_derive::{Deserialize, Serialize};
 
 pub type PackageId = String;
 pub type PackageFullName = String;

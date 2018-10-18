@@ -6,35 +6,21 @@
 #![warn(unused_import_braces)]
 #![warn(unused_qualifications)]
 #![allow(elided_lifetimes_in_paths)] // disable warnings for rocket in rust 2018
-// Clippy
-#![cfg_attr(feature = "cargo-clippy", warn(fallible_impl_from))]
-#![cfg_attr(feature = "cargo-clippy", warn(int_plus_one))]
-#![cfg_attr(feature = "cargo-clippy", warn(mem_forget))]
-#![cfg_attr(feature = "cargo-clippy", warn(mut_mut))]
-#![cfg_attr(feature = "cargo-clippy", warn(mutex_integer))]
-#![cfg_attr(feature = "cargo-clippy", warn(pub_enum_variant_names))]
-#![cfg_attr(feature = "cargo-clippy", warn(range_plus_one))]
-#![cfg_attr(feature = "cargo-clippy", warn(used_underscore_binding))]
-#![cfg_attr(feature = "cargo-clippy", warn(wrong_pub_self_convention))]
-// Features
 #![feature(plugin)]
 #![feature(custom_derive)]
 #![plugin(rocket_codegen)]
 
-#[macro_use]
-extern crate lazy_static;
+use std::env;
+use std::process;
+
 use dotenv;
+use lazy_static::lazy_static;
 use rocket;
 use rocket_cors::AllowedOrigins;
-#[macro_use]
-extern crate serde_derive;
 
 pub mod filename;
 pub mod manifest;
 pub mod routes;
-
-use std::env;
-use std::process;
 
 lazy_static! {
     static ref RAVEN_REPOSITORY_NAME: String = {
