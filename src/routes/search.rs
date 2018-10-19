@@ -21,6 +21,7 @@ pub struct ManifestFilter {
     pub description: Option<String>, // not yet ideal type
     pub tags: Option<String>,        // not yet ideal type
     pub created_at: Option<FormDateTime>,
+    pub sort_by: Option<String>,
     pub order_by: Option<String>,
 }
 
@@ -47,6 +48,10 @@ impl ManifestFilter {
 
     pub fn created_at(&self) -> &Option<FormDateTime> {
         &self.created_at
+    }
+
+    pub fn sort_by(&self) -> &Option<String> {
+        &self.sort_by
     }
 
     pub fn order_by(&self) -> &Option<String> {
@@ -117,56 +122,37 @@ fn search_filter(manifest_filter: Option<ManifestFilter>) -> Result<Json<Vec<Man
         if let Some(tags) = filter.tags() {
             manifests.retain(|ref x: &Manifest| x.metadata().tags().contains(tags));
         }
-        if let Some(order_by) = filter.order_by() {
-            match order_by.as_ref() {
-                "name_asc" => manifests.sort_by(|a: &Manifest, b: &Manifest| {
+        if let Some(sort_by) = filter.sort_by() {
+            match sort_by.as_ref() {
+                "name" => manifests.sort_by(|a: &Manifest, b: &Manifest| {
                     a.metadata().name().cmp(&b.metadata().name())
                 }),
-                "name_desc" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        b.metadata().name().cmp(&a.metadata().name())
-                    });
-                }
-                "category_asc" => {
+                "category" => {
                     manifests.sort_by(|a: &Manifest, b: &Manifest| {
                         a.metadata().category().cmp(&b.metadata().category())
                     });
                 }
-                "category_desc" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        b.metadata().category().cmp(&a.metadata().category())
-                    });
-                }
-                "description_asc" => {
+                "description" => {
                     manifests.sort_by(|a: &Manifest, b: &Manifest| {
                         a.metadata().description().cmp(&b.metadata().description())
                     });
                 }
-                "description_desc" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        b.metadata().description().cmp(&a.metadata().description())
-                    });
-                }
-                "tags_asc" => {
+                "tags" => {
                     manifests.sort_by(|a: &Manifest, b: &Manifest| {
                         a.metadata().tags().cmp(&b.metadata().tags())
                     });
                 }
-                "tags_desc" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        b.metadata().tags().cmp(&a.metadata().tags())
-                    });
-                }
-                "created_at_asc" => {
+                "created_at" => {
                     manifests.sort_by(|a: &Manifest, b: &Manifest| {
                         a.metadata().created_at().cmp(&b.metadata().created_at())
                     });
                 }
-                "created_at_desc" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        b.metadata().created_at().cmp(&a.metadata().created_at())
-                    });
-                }
+                _ => (),
+            }
+        }
+        if let Some(order_by) = filter.order_by() {
+            match order_by.as_ref() {
+                "desc" => manifests.reverse(),
                 _ => (),
             }
         }
