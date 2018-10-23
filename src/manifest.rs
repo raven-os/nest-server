@@ -15,7 +15,7 @@ pub struct Metadata {
     #[serde(default)]
     description: String, // not yet ideal type
     #[serde(default)]
-    tags: String,        // not yet ideal type
+    tags: String, // not yet ideal type
     created_at: DateTime<Utc>,
 }
 
