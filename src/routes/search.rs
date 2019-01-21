@@ -132,6 +132,11 @@ fn search_filter(manifest_filter: Option<ManifestFilter>) -> Result<Json<Vec<Man
                         a.metadata().category().cmp(&b.metadata().category())
                     });
                 }
+                "version" => {
+                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
+                        a.metadata().version().cmp(&b.metadata().version())
+                    });
+                }
                 "description" => {
                     manifests.sort_by(|a: &Manifest, b: &Manifest| {
                         a.metadata().description().cmp(&b.metadata().description())
