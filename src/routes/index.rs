@@ -3,7 +3,7 @@ use rocket::response::content::Html;
 use crate::RAVEN_REPOSITORY_NAME;
 
 #[get("/")]
-fn index() -> Html<String> {
+pub fn index() -> Html<String> {
     Html(format!(
         "Raven \"{}\" v{}.{}.{}",
         *RAVEN_REPOSITORY_NAME,

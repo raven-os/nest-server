@@ -7,7 +7,8 @@ use rocket::response::NamedFile;
 use rocket::response::Responder;
 use rocket::{response, Request, Response};
 
-struct DownloadFile {
+#[derive(Debug)]
+pub struct DownloadFile {
     file: NamedFile,
     category: FileName,
     name: FileName,
@@ -31,7 +32,7 @@ impl<'r> Responder<'r> for DownloadFile {
 }
 
 #[get("/p/<category>/<name>/<version>/download")]
-fn download(category: FileName, name: FileName, version: FileName) -> Option<DownloadFile> {
+pub fn download(category: FileName, name: FileName, version: FileName) -> Option<DownloadFile> {
     let path = PathBuf::from(".")
         .join(&*RAVEN_REPOSITORY_PATH)
         .join(&category)

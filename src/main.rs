@@ -6,16 +6,16 @@
 #![warn(unused_import_braces)]
 #![warn(unused_qualifications)]
 #![allow(elided_lifetimes_in_paths)] // disable warnings for rocket in rust 2018
-#![feature(plugin)]
-#![feature(custom_derive)]
-#![plugin(rocket_codegen)]
+#![feature(proc_macro_hygiene, decl_macro)]
+#![feature(custom_attribute)]
+#[macro_use]
+extern crate rocket;
 
 use std::env;
 use std::process;
 
 use dotenv;
 use lazy_static::lazy_static;
-use rocket;
 use rocket_cors::AllowedOrigins;
 
 pub mod filename;
@@ -58,7 +58,6 @@ fn main() {
                 routes::index::index,
                 routes::pull::pull,
                 routes::search::search,
-                routes::search::search_filter,
                 routes::download::download,
                 routes::metadata::metadata,
             ],

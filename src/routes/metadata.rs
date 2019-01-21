@@ -3,7 +3,6 @@ use std::io::Read;
 use std::path::PathBuf;
 
 use failure::Error;
-use rocket_contrib::Json;
 use toml;
 
 use crate::filename::FileName;
@@ -11,11 +10,11 @@ use crate::manifest::Manifest;
 use crate::RAVEN_REPOSITORY_PATH;
 
 #[get("/p/<category>/<name>/<version>/metadata")]
-fn metadata(
+pub fn metadata(
     category: FileName,
     name: FileName,
     version: FileName,
-) -> Result<Json<Manifest>, Error> {
+) -> Result<rocket_contrib::json::Json<Manifest>, Error> {
     let path = PathBuf::from(".")
         .join(&*RAVEN_REPOSITORY_PATH)
         .join(category)
@@ -30,5 +29,5 @@ fn metadata(
         .unwrap_or_default();
 
     file.read_to_string(&mut s)?;
-    Ok(Json(toml::from_str(&s)?))
+    Ok(rocket_contrib::json::Json(toml::from_str(&s)?))
 }
