@@ -5,8 +5,8 @@ use chrono::{DateTime, Utc};
 use failure::Error;
 use glob;
 use rocket::http::RawStr;
+use rocket::request::Form;
 use rocket::request::FromFormValue;
-use rocket_contrib::Json;
 use serde_derive::{Deserialize, Serialize};
 use toml;
 
@@ -73,27 +73,10 @@ impl<'v> FromFormValue<'v> for FormDateTime {
     }
 }
 
-#[get("/search")]
-pub fn search() -> Result<Json<Vec<Manifest>>, Error> {
-    let mut manifests = Vec::new();
-    for path in glob::glob(&format!("{}/**/*.toml", *RAVEN_REPOSITORY_PATH))? {
-        let path = path?;
-        let mut file = File::open(path)?;
-
-        // Allocate a string long enough to hold the entire file
-        let mut s = file
-            .metadata()
-            .map(|m| String::with_capacity(m.len() as usize))
-            .unwrap_or_default();
-
-        file.read_to_string(&mut s)?;
-        manifests.push(toml::from_str(&s)?);
-    }
-    Ok(Json(manifests))
-}
-
-#[get("/search?<manifest_filter>")]
-fn search_filter(manifest_filter: Option<ManifestFilter>) -> Result<Json<Vec<Manifest>>, Error> {
+#[post("/search", data = "<manifest_filter>")]
+pub fn search(
+    manifest_filter: Option<Form<ManifestFilter>>,
+) -> Result<rocket_contrib::json::Json<Vec<Manifest>>, Error> {
     let mut manifests = Vec::new();
     for path in glob::glob(&format!("{}/**/*.toml", *RAVEN_REPOSITORY_PATH))? {
         let path = path?;
@@ -132,6 +115,11 @@ fn search_filter(manifest_filter: Option<ManifestFilter>) -> Result<Json<Vec<Man
                         a.metadata().category().cmp(&b.metadata().category())
                     });
                 }
+                "version" => {
+                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
+                        a.metadata().version().cmp(&b.metadata().version())
+                    });
+                }
                 "description" => {
                     manifests.sort_by(|a: &Manifest, b: &Manifest| {
                         a.metadata().description().cmp(&b.metadata().description())
@@ -157,5 +145,5 @@ fn search_filter(manifest_filter: Option<ManifestFilter>) -> Result<Json<Vec<Man
             }
         }
     }
-    Ok(Json(manifests))
+    Ok(rocket_contrib::json::Json(manifests))
 }
