@@ -5,6 +5,7 @@ use chrono::{DateTime, Utc};
 use failure::Error;
 use glob;
 use rocket::http::RawStr;
+use rocket::http::Status;
 use rocket::request::Form;
 use rocket::request::FromFormValue;
 use serde_derive::{Deserialize, Serialize};
@@ -76,74 +77,81 @@ impl<'v> FromFormValue<'v> for FormDateTime {
 #[post("/search", data = "<manifest_filter>")]
 pub fn search(
     manifest_filter: Option<Form<ManifestFilter>>,
-) -> Result<rocket_contrib::json::Json<Vec<Manifest>>, Error> {
-    let mut manifests = Vec::new();
-    for path in glob::glob(&format!("{}/**/*.toml", *RAVEN_REPOSITORY_PATH))? {
-        let path = path?;
-        let mut file = File::open(path)?;
+) -> Result<rocket_contrib::json::Json<Vec<Manifest>>, Status> {
+    let res: Result<_, Error> = try {
+        let mut manifests = Vec::new();
+        for path in glob::glob(&format!("{}/**/*.toml", *RAVEN_REPOSITORY_PATH))? {
+            let _: Result<_, Error> = try {
+                let path = path?;
+                let mut file = File::open(path)?;
 
-        // Allocate a string long enough to hold the entire file
-        let mut s = file
-            .metadata()
-            .map(|m| String::with_capacity(m.len() as usize))
-            .unwrap_or_default();
+                // Allocate a string long enough to hold the entire file
+                let mut s = file
+                    .metadata()
+                    .map(|m| String::with_capacity(m.len() as usize))
+                    .unwrap_or_default();
 
-        file.read_to_string(&mut s)?;
-        manifests.push(toml::from_str(&s)?);
-    }
+                file.read_to_string(&mut s)?;
+                manifests.push(toml::from_str(&s)?);
+            };
+        }
 
-    if let Some(filter) = manifest_filter {
-        if let Some(name) = filter.name() {
-            manifests.retain(|ref x: &Manifest| x.metadata().name().contains(name));
-        }
-        if let Some(category) = filter.category() {
-            manifests.retain(|ref x: &Manifest| x.metadata().category().contains(category));
-        }
-        if let Some(description) = filter.description() {
-            manifests.retain(|ref x: &Manifest| x.metadata().description().contains(description));
-        }
-        if let Some(tags) = filter.tags() {
-            manifests.retain(|ref x: &Manifest| x.metadata().tags().contains(tags));
-        }
-        if let Some(sort_by) = filter.sort_by() {
-            match sort_by.as_ref() {
-                "name" => manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                    a.metadata().name().cmp(&b.metadata().name())
-                }),
-                "category" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        a.metadata().category().cmp(&b.metadata().category())
-                    });
+        if let Some(filter) = manifest_filter {
+            if let Some(name) = filter.name() {
+                manifests.retain(|ref x: &Manifest| x.metadata().name().contains(name));
+            }
+            if let Some(category) = filter.category() {
+                manifests.retain(|ref x: &Manifest| x.metadata().category().contains(category));
+            }
+            if let Some(description) = filter.description() {
+                manifests
+                    .retain(|ref x: &Manifest| x.metadata().description().contains(description));
+            }
+            if let Some(tags) = filter.tags() {
+                manifests.retain(|ref x: &Manifest| x.metadata().tags().contains(tags));
+            }
+            if let Some(sort_by) = filter.sort_by() {
+                match sort_by.as_ref() {
+                    "name" => manifests.sort_by(|a: &Manifest, b: &Manifest| {
+                        a.metadata().name().cmp(&b.metadata().name())
+                    }),
+                    "category" => {
+                        manifests.sort_by(|a: &Manifest, b: &Manifest| {
+                            a.metadata().category().cmp(&b.metadata().category())
+                        });
+                    }
+                    "version" => {
+                        manifests.sort_by(|a: &Manifest, b: &Manifest| {
+                            a.metadata().version().cmp(&b.metadata().version())
+                        });
+                    }
+                    "description" => {
+                        manifests.sort_by(|a: &Manifest, b: &Manifest| {
+                            a.metadata().description().cmp(&b.metadata().description())
+                        });
+                    }
+                    "tags" => {
+                        manifests.sort_by(|a: &Manifest, b: &Manifest| {
+                            a.metadata().tags().cmp(&b.metadata().tags())
+                        });
+                    }
+                    "created_at" => {
+                        manifests.sort_by(|a: &Manifest, b: &Manifest| {
+                            a.metadata().created_at().cmp(&b.metadata().created_at())
+                        });
+                    }
+                    _ => (),
                 }
-                "version" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        a.metadata().version().cmp(&b.metadata().version())
-                    });
+            }
+            if let Some(order_by) = filter.order_by() {
+                match order_by.as_ref() {
+                    "desc" => manifests.reverse(),
+                    _ => (),
                 }
-                "description" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        a.metadata().description().cmp(&b.metadata().description())
-                    });
-                }
-                "tags" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        a.metadata().tags().cmp(&b.metadata().tags())
-                    });
-                }
-                "created_at" => {
-                    manifests.sort_by(|a: &Manifest, b: &Manifest| {
-                        a.metadata().created_at().cmp(&b.metadata().created_at())
-                    });
-                }
-                _ => (),
             }
         }
-        if let Some(order_by) = filter.order_by() {
-            match order_by.as_ref() {
-                "desc" => manifests.reverse(),
-                _ => (),
-            }
-        }
-    }
-    Ok(rocket_contrib::json::Json(manifests))
+        rocket_contrib::json::Json(manifests)
+    };
+    let res = res.map_err(|_| Status::InternalServerError);
+    res
 }
