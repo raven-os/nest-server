@@ -1,4 +1,3 @@
-use failure::Error;
 use rocket::http::Status;
 
 use crate::manifest::Manifest;
