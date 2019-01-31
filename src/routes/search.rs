@@ -81,6 +81,8 @@ pub fn search(
     let res: Result<_, Error> = try {
         let mut manifests = Vec::new();
         for path in glob::glob(&format!("{}/**/*.toml", *RAVEN_REPOSITORY_PATH))? {
+            // Result returned by try is not used because the goal here is to skip
+            // the package if it contains an error and not to generate an error 500
             let _: Result<_, Error> = try {
                 let path = path?;
                 let mut file = File::open(path)?;
