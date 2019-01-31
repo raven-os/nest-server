@@ -1,0 +1,104 @@
+/* -----------------------------------
+GENERAL
+----------------------------------- */
+:root {
+    --accent: #ed254e;
+    --primary: #f7f4f8;
+    --white: #ffffff;
+    --primary-dark: #343432;
+}
+
+body {
+    background: var(--primary);
+    color: var(--primary-dark);
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none !important;
+}
+
+a:hover, a:active, a:focus {
+    color: var(--white) !important;
+    outline: none;
+    text-decoration: none !important;
+}
+
+p {
+    padding: 0;
+    margin: 0 0 30px 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: sans-serif;
+    font-weight: 400;
+    margin: 0 0 20px 0;
+    padding: 0;
+}
+
+
+/*  Global classes to customize tables 
+    Don't remove nor move 
+*/
+
+table.b-table[aria-busy=false], table.b-table[aria-busy=true] {
+    opacity: 1;
+}
+
+.list-thead {
+    background-color: rgba(52, 52, 50, 0.9);
+    color: var(--primary);
+}
+
+.list-table-cell {
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 10px;
+}
+
+.metadata-table-cell {
+    padding: 10px;
+    text-align: justify;
+}
+
+.td-name {
+    width: 20%;
+}
+  
+.td-cat {
+    width: 14%;
+}
+  
+.td-vers {
+    width: 13%;
+}
+  
+.td-date {
+    width: 17%;
+}
+  
+.td-desc {
+    width: 36%;
+}
+
+.td-meta {
+    width: 25%;
+}
+
+.table-row, .table-row-nohover {
+    border-bottom: 1px solid var(--accent) !important;
+}
+  
+.table-row:hover {
+    background-color: rgba(237, 37, 78, 0.25) !important;
+}
