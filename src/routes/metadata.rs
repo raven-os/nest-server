@@ -5,6 +5,8 @@ use std::path::PathBuf;
 use failure::Error;
 use toml;
 
+use rocket::http::Status;
+
 use crate::filename::FileName;
 use crate::manifest::Manifest;
 use crate::RAVEN_REPOSITORY_PATH;
@@ -14,7 +16,7 @@ pub fn metadata(
     category: FileName,
     name: FileName,
     version: FileName,
-) -> Result<rocket_contrib::json::Json<Manifest>, Error> {
+) -> Result<Option<rocket_contrib::json::Json<Manifest>>, Status> {
     let path = PathBuf::from(".")
         .join(&*RAVEN_REPOSITORY_PATH)
         .join(category)
@@ -22,12 +24,15 @@ pub fn metadata(
         .join(version)
         .join("manifest")
         .with_extension("toml");
-    let mut file = File::open(path)?;
-    let mut s = file
-        .metadata()
-        .map(|m| String::with_capacity(m.len() as usize))
-        .unwrap_or_default();
 
-    file.read_to_string(&mut s)?;
-    Ok(rocket_contrib::json::Json(toml::from_str(&s)?))
+    let res: Result<_, Error> = try {
+        let mut file = File::open(path)?;
+        let mut s = file
+            .metadata()
+            .map(|m| String::with_capacity(m.len() as usize))
+            .unwrap_or_default();
+        file.read_to_string(&mut s)?;
+        Some(rocket_contrib::json::Json(toml::from_str(&s)?))
+    };
+    res.map_err(|_| Status::NotFound)
 }

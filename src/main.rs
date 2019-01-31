@@ -8,6 +8,7 @@
 #![allow(elided_lifetimes_in_paths)] // disable warnings for rocket in rust 2018
 #![feature(proc_macro_hygiene, decl_macro)]
 #![feature(custom_attribute)]
+#![feature(try_blocks)]
 #[macro_use]
 extern crate rocket;
 
@@ -16,6 +17,7 @@ use std::process;
 
 use dotenv;
 use lazy_static::lazy_static;
+use rocket_contrib::json::JsonValue;
 use rocket_cors::AllowedOrigins;
 
 pub mod filename;
@@ -41,6 +43,14 @@ lazy_static! {
     };
 }
 
+#[catch(404)]
+fn not_found() -> JsonValue {
+    rocket_contrib::json!({
+        "status": "error",
+        "reason": "Resource was not found."
+    })
+}
+
 fn main() {
     dotenv::dotenv().ok();
     lazy_static::initialize(&RAVEN_REPOSITORY_NAME);
@@ -62,6 +72,7 @@ fn main() {
                 routes::metadata::metadata,
             ],
         )
+        .register(catchers![not_found])
         .attach(options)
         .launch();
 }
