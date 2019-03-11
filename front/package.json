@@ -3,12 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --mode local",
-    "local": "vue-cli-service serve --mode local",
-    "build": "vue-cli-service build --mode stable",
-    "stable": "vue-cli-service build --mode stable",
-    "beta": "vue-cli-service build --mode beta",
-    "unstable": "vue-cli-service build --mode unstable",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build --dest ../static",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

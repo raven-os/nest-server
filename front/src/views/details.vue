@@ -150,7 +150,7 @@ export default {
       this.$root.$emit('bv::refresh::table', 'dependencies-table')
     },
     getMetadata () {
-      let url = process.env.VUE_APP_API + '/p/'
+      let url = '/p/'
       url += this.$route.params.category + '/'
       url += this.$route.params.name + '/'
       url += this.$route.params.version + '/metadata'

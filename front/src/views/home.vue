@@ -159,7 +159,7 @@ export default {
     },
     packagesProvider (ctx) {
       this.isBusy = true
-      let url = process.env.VUE_APP_API + '/search'
+      let url = '/search'
       var query = this.$route.query
       if (Object.keys(query).length === 0) {
         this.resetQuery()
