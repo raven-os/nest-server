@@ -11,7 +11,7 @@ RUN apt-get install -y -q nodejs
 COPY . /app
 WORKDIR /app
 
-Compile backend
+# Compile backend
 RUN cargo build --release
 
 # Compile frontend
