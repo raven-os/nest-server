@@ -65,6 +65,7 @@ fn main() {
         .mount(
             "/",
             routes![
+                routes::index::static_files,
                 routes::index::index,
                 routes::pull::pull,
                 routes::search::search,

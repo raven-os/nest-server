@@ -1,14 +1,20 @@
-use rocket::response::content::Html;
+use std::path::{Path, PathBuf};
 
-use crate::RAVEN_REPOSITORY_NAME;
+static ROOT_STATIC_FILES: &'static str = "./static/";
+
+use rocket::response::NamedFile;
+
+#[get("/<files..>", rank = 1)]
+pub fn static_files(files: PathBuf) -> Option<NamedFile> {
+    let path = Path::new(ROOT_STATIC_FILES).join(files);
+    if path.exists() {
+        NamedFile::open(path).ok()
+    } else {
+        NamedFile::open(Path::new(ROOT_STATIC_FILES).join("index.html")).ok()
+    }
+}
 
 #[get("/")]
-pub fn index() -> Html<String> {
-    Html(format!(
-        "Raven \"{}\" v{}.{}.{}",
-        *RAVEN_REPOSITORY_NAME,
-        env!("CARGO_PKG_VERSION_MAJOR"),
-        env!("CARGO_PKG_VERSION_MINOR"),
-        env!("CARGO_PKG_VERSION_PATCH"),
-    ))
+pub fn index() -> Option<NamedFile> {
+    NamedFile::open(Path::new("static").join("index.html")).ok()
 }
