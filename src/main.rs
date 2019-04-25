@@ -9,6 +9,8 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 #![feature(custom_attribute)]
 #![feature(try_blocks)]
+#[cfg(test)]
+mod tests;
 #[macro_use]
 extern crate rocket;
 
@@ -17,6 +19,7 @@ use std::process;
 
 use dotenv;
 use lazy_static::lazy_static;
+use rocket::Rocket;
 use rocket_contrib::json::JsonValue;
 use rocket_cors::AllowedOrigins;
 
@@ -51,7 +54,7 @@ fn not_found() -> JsonValue {
     })
 }
 
-fn main() {
+fn rocket_launcher() -> Rocket {
     dotenv::dotenv().ok();
     lazy_static::initialize(&RAVEN_REPOSITORY_NAME);
     lazy_static::initialize(&RAVEN_REPOSITORY_PATH);
@@ -75,5 +78,8 @@ fn main() {
         )
         .register(catchers![not_found])
         .attach(options)
-        .launch();
+}
+
+fn main() {
+    rocket_launcher().launch();
 }

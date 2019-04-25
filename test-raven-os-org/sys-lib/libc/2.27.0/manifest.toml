@@ -1,0 +1,10 @@
+[metadata]
+name = "libc"
+category = "sys-lib"
+version = "2.27.0"
+description = "The lib!"
+tags = "libc, linux, unix, c"
+created_at = "1993-04-06T20:01:01Z"
+
+[dependencies]
+"stable::sys-lib/linux-headers" = "=4.15.3"

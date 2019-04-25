@@ -1,0 +1,10 @@
+[metadata]
+name = "essentials"
+category = "virtual"
+version = "0.0.1"
+description = "Essentials tools"
+tags = "essential, tool, virtual, test"
+created_at = "1971-04-06T20:01:01Z"
+
+[dependencies]
+"stable::sys-lib/libc" = ">=2.27.0"

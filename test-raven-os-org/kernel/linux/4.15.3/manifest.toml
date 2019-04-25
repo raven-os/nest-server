@@ -1,0 +1,7 @@
+[metadata]
+name = "linux"
+category = "kernel"
+version = "4.15.3"
+description = "An awesome kernel"
+tags = "linux, kernel, unix, basic"
+created_at = "1992-04-06T20:01:01Z"

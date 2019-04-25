@@ -1,0 +1,11 @@
+[badmetadata]
+name = "linux-headers"
+category = "sys-lib"
+version = "fake version 4.54.3"
+description = "Some linux headers"
+tags = "header, linux, unix, basic"
+created_at = "this date is broken"
+
+[dependencies]
+"stable::kernel/linux" = ">=4.15.3"
+foobar  blabla
