@@ -1,0 +1,10 @@
+{{#> layouts/base title=(concat code " - " error) }}
+    {{#*inline "content-block"}}
+        <div class="row align-self-center w-100 mx-0">
+            <div class="col" align="center">
+                <h1 class="display-1"><kbd>{{code}}</kbd> - {{error}}</h1>
+                <h3><a href="/">Go back to the home page</a></h3>
+            </div>
+        </div>
+    {{/inline}}
+{{/layouts/base}}

@@ -1,0 +1,24 @@
+{{#> layouts/search}}
+    {{#*inline "table-block"}}
+        <tr>
+            <th style="width: 20%;">Package</th>
+            <th style="width: 60%;">Description</th>
+            <th style="width: 20%;">Tags</th>
+        </tr>
+        {{#each results}}
+        <tr class="bg-light-accent-hover">
+            <td class="text-white text-truncate">
+                <a class="text-white" href="/p/{{category}}/{{name}}">
+                    <b><kbd>{{category}}/{{name}}</kbd></b>
+                </a>
+            </td>
+            <td class="text-truncate">{{metadata.description}}</td>
+            <td class="text-white text-truncate">
+                {{#each metadata.tags}}
+                    <a href="/search?q={{this}}&search_by=tags" class="badge badge-dark">{{this}}</a>
+                {{/each}}
+            </td>
+        </tr>
+        {{/each}}
+    {{/inline}}
+{{/layouts/search}}

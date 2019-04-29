@@ -1,0 +1,24 @@
+name = "example"
+pretty_name = "Example"
+
+package_dir = "./packages/"             # Don't edit this value if you are unsure of what you are doing
+cache_dir = "./cache/"                  # (Same here)
+
+auth_token = "a_very_strong_password"   # Definitely edit this one though!
+
+[[links]]
+name = "Example"
+url = "/"
+active = true
+
+[[links]]
+name = "Stable"
+url = "https://stable.raven-os.org"
+
+[[links]]
+name = "Beta"
+url = "https://beta.raven-os.org"
+
+[[links]]
+name = "Unstable"
+url = "https://unstable.raven-os.org"

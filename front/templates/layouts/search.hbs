@@ -1,0 +1,47 @@
+{{#> layouts/base title=(concat results_len " " (plural "result" "results" results_len) " for " query " - " pretty_name " - Raven-OS Repository")}}
+    {{#*inline "content-block"}}
+        <div class="container">
+            <div class="row py-5"></div>
+            <div class="row">
+                <div class="col" align="center">
+                    <h1 class="display-4 text-truncate text-white">
+                        {{#if query}}
+                            <b><span class="text-accent">{{results_len}}</span> <span class="text-dark">{{plural "result" "results" results_len}} for</span>  <kbd>{{query}}</kbd></b>
+                        {{else}}
+                            <b><span class="text-accent">{{results_len}}</span> <span class="text-dark">{{plural "package" "packages" results_len}}</span></b>
+                        {{/if}}
+                    </h1>
+                </div>
+            </div>
+
+            <div class="row py-4"></div>
+
+            <div class="row">
+                <div class="col">
+                    <u><b>Results:</b></u>
+                </div>
+            </div>
+
+            <div class="row py-1"></div>
+
+            <table class="table table-sm table-striped border">
+                <tbody>
+                    {{#if results_len}}
+                        {{> table-block}}
+                    {{else}}
+                        <tr>
+                            <td class="container text-center py-3">
+                                <i>There is no package with "{{query}}" in its {{search_by}}.</i>
+                            </td>
+                        </tr>
+                    {{/if}}
+                </tbody>
+            </table>
+
+            {{> search-note}}
+
+            <div class="row py-2"></div>
+
+        </div>
+    {{/inline}}
+{{/layouts/base}}

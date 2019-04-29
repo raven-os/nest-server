@@ -1,0 +1,96 @@
+{{#> layouts/base title=(concat manifest.category "/" manifest.name " - " pretty_name " - Raven-OS Repository")}}
+
+    {{#*inline "content-block"}}
+        <div class="container">
+            <div class="row py-5"></div>
+            <div class="row">
+                <div class="col" align="center">
+                    <h1 class="display-4">
+                        <b><a href="/search?q={{manifest.category}}&search_by=category">{{manifest.category}}</a>/{{manifest.name}}</b>
+                    </h1>
+                    <br>
+                    <kbd><b>nest install {{name}}::{{manifest.category}}/{{manifest.name}}</b></kbd>
+                </div>
+            </div>
+
+            <div class="row py-4"></div>
+
+            {{> includes/snippet/title title="Description"}}
+
+            <div class="row">
+                <div class="col">
+                    <div class="container text-justify py-3 bg-mid-grey">
+                        {{manifest.metadata.description}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row py-3"></div>
+
+            {{> includes/snippet/title title="Metadata"}}
+
+            <div class="row">
+                <div class="col">
+                    <table class="table table-striped border">
+                        <tbody>
+                            <tr>
+                                <th scope="row" style="width: 20%;"><i class="fas fa-code-branch icn-width"></i><b>Available Versions:</b></td>
+                                <td>
+                                    {{#each sorted_versions}}
+                                        <kbd><b>{{version}}</b></kbd>
+                                    {{/each}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" style="width: 20%;"><i class="fas fa-calendar icn-width"></i><b>Last Update:</b></td>
+                                <td>{{timeago last_version.metadata.wrap_date}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" style="width: 20%;"><i class="fas fa-tags icn-width"></i><b>Tags:</b></td>
+                                <td>
+                                    {{#each manifest.metadata.tags}}
+                                        <kbd><b>{{this}}</b></kbd>
+                                    {{/each}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" style="width: 20%;"><i class="fas fa-user icn-width"></i> <b>Maintainer:</b></td>
+                                <td>{{manifest.metadata.maintainer}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" style="width: 20%;"><i class="fas fa-balance-scale icn-width"></i> <b>Licenses:</b></td>
+                                <td>
+                                    {{#each manifest.metadata.licenses}}
+                                        <kbd><b>{{ this }}</b></kbd>
+                                    {{/each}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" style="width: 20%;"><i class="fab fa-firefox icn-width"></i> <b>Homepage:</b></td>
+                                <td><a href="{{manifest.metadata.upstream_url}}">{{manifest.metadata.upstream_url}}</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row py-2"></div>
+
+            {{#if last_version}}
+                {{> includes/snippet/versiondata last_version manifest=manifest}}
+            {{/if}}
+
+            <div class="row py-3"></div>
+
+            <div class="row">
+                <div class="col text-center">
+                    <h5><a href="/p/{{manifest.category}}/{{manifest.name}}/versions">See all versions and their dependencies »</a></h5>
+                </div>
+            </div>
+
+            <div class="row py-3"></div>
+
+        </div>
+    {{/inline}}
+{{/layouts/base}}
+

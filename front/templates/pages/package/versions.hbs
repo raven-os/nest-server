@@ -1,0 +1,30 @@
+{{#> layouts/base title=(concat "Versions of " manifest.category "/" manifest.name " - " pretty_name " - Raven-OS Repository")}}
+    {{#*inline "content-block"}}
+        <div class="container">
+            <div class="row py-5"></div>
+            <div class="row">
+                <div class="col" align="center">
+                    <h1 class="display-4">
+                        <b><a href="/search?q={{manifest.category}}&search_by=category">{{manifest.category}}</a>/{{manifest.name}}</b>
+                    </h1>
+                </div>
+            </div>
+
+            <div class="row py-4"></div>
+
+            <div class="row">
+                <div class="col text-center">
+                    <h5><a href="/p/{{manifest.category}}/{{manifest.name}}">« Go back to the manifest's details</a></h5>
+                </div>
+            </div>
+            <div class="row py-3"></div>
+
+            {{#each sorted_versions}}
+                {{> includes/snippet/versiondata this manifest=../manifest}}
+            {{/each}}
+
+            <div class="row py-2"></div>
+
+        </div>
+    {{/inline}}
+{{/layouts/base}}
