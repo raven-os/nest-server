@@ -7,8 +7,11 @@ This file gives details for all the publicly available routes that form the Nest
 A quick summary of this repository. Among others, it indicates the name of the repository and a small history of the most recent updates.
 
 *Request parameters*: None
+
 *Response code*: 200 OK
+
 *Response Content-Type*: `application/json`
+
 *Response fields*:
 
   * `name` (String): the name of the repository, following any conventions specified by the Nest specification.
@@ -152,8 +155,11 @@ Example:
 An array of all [`PackageManifest`] hosted by this repository.
 
 *Request parameters*: None
+
 *Response code*: 200 OK
+
 *Response Content-Type*: `application/json`
+
 *Response body*: An array of [`PackageManifest`], as described by the Nest specification. The elements are not sorted.
 
 Example:
@@ -278,7 +284,9 @@ Return all the metadata of a package identified with its name and category.
   * `name` (String): The name of the package, following any convention described by the Nest specification.
 
 *Response code*: 200 OK
+
 *Response Content-Type*: `application/json`
+
 *Response body*: A single [`PackageManifest`], as described by the Nest specification.
 
 Example (`GET /api/p/sys-lib/ncurses`):
@@ -326,7 +334,9 @@ retrieves all metadata for all versions of a package.
   * `version` (String): The version the package, following any convention described by the Nest specification.
 
 *Response code*: 204 No Content
+
 *Response Content-Type*: None
+
 *Response body*: None
 
 ## `GET /api/p/<category>/<name>/<version>/download`
@@ -340,7 +350,9 @@ Download a package in its NPF (`.nest`) form.
   * `version` (String): The version the package, following any convention described by the Nest specification.
 
 *Response code*: 200 OK
+
 *Response Content-disposition*: `attachment; filename="<name>-<version>.nest"`
+
 *Response body*: The content of the NPF (`.nest`) file
 
 ## `GET /api/p/<category>/<name>/<version>/content`
@@ -354,7 +366,9 @@ Retrieve the content of a package.
   * `version` (String): The version the package, following any convention described by the Nest specification.
 
 *Response code*: 200 OK
+
 *Response Content-Type*: `application/json`
+
 *Response body*: An array of absolute paths, each one being a file contained in this package.
 
 Example (`GET /api/p/sys-lib/readline/8.0.0/content`):
@@ -431,7 +445,9 @@ Remove a package.
   * `version` (String): The version the package, following any convention described by the Nest specification.
 
 *Response code*: 204 No Content
+
 *Response Content-Type*: None
+
 *Response body*: None
 
 ## `POST /api/upload`
@@ -445,8 +461,11 @@ Upload a package from its NPF (`.nest) form. Its name, category and version are 
 **Note**: This route is protected by an authentification token, which must be specified in the `X-Auth-Token` HTTP header.
 
 *Request parameters*: None
+
 *Response code*: 204 No Content
+
 *Response Content-Type*: None
+
 *Response body*: None
 
 ## `GET /api/search&<q>&<search_by>&<exact_match>`
@@ -460,17 +479,19 @@ Search for packages.
   * `search_by` (String): The kind of data `q` shall be a part of. As of now, only those value are supported: `name`, `category`, `description`, `tags` and `content`.
 
 *Response code*: 200 OK
+
 *Response Content-Type*: `application/json`
+
 *Response body*: The body depends on the value of `search_by`:
 
   * If `search_by` is either `name`, `category`, `description` or `tags`, the content is an array of [`PackageManifest`]s (as described by the Nest specification) that match the given query.
-
   * Else if `search_by` is `content`, the content is an array of objects with the following elements:
     * `path` (String): The absolute path that matches the query
     * `name` (String): The [full name] (as described by the Nest specification) of the package that matches the query
     * `all_version` (Bool): A flag that indicates if all versions of the package matched the query, or if only some of them did.
 
 Example 1 (`GET /api/search&q=libreadline.so&search_by=content`)
+
 ```json
 [
   {
@@ -492,6 +513,7 @@ Example 1 (`GET /api/search&q=libreadline.so&search_by=content`)
 ```
 
 Example 2 (`GET /api/search&q=/usr/lib64/libreadline.so&search_by=content&exact_match=true`)
+
 ```json
 [
   {
@@ -503,6 +525,7 @@ Example 2 (`GET /api/search&q=/usr/lib64/libreadline.so&search_by=content&exact_
 ```
 
 Example 3 (`GET /api/search&q=sys-lib&search_by=category`)
+
 ```json
 [
   {
