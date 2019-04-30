@@ -70,14 +70,18 @@ impl History {
             self.entries
                 .retain(|entry| entry.manifest().full_name() != full_name);
 
-            // Insert in entries
-            self.entries.push(HistoryEntry {
+            let entry = HistoryEntry {
                 date: version_data.wrap_date().clone(),
                 manifest: manifest.clone(),
-            });
+            };
 
-            // Sort by date
-            self.entries.sort_unstable_by(|a, b| b.date().cmp(a.date()));
+            match self
+                .entries
+                .binary_search_by(|e| version_data.wrap_date().cmp(e.date()))
+            {
+                Ok(idx) => self.entries.insert(idx, entry),
+                Err(idx) => self.entries.insert(idx, entry),
+            }
 
             // Remove any extra entry
             if self.entries.len() > HISTORY_SIZE {

@@ -1,6 +1,6 @@
 # API
 
-This file gives details for all the publicly available routes that form the Nest-Server API.
+This file gives details about all the publicly available routes that form the Nest-Server API.
 
 ## `GET /api/`
 
@@ -18,8 +18,8 @@ A quick summary of this repository. Among others, it indicates the name of the r
   * `pretty_name` (String): a "pretty" name, usually the same as `name` without any restriction. It is common to capitalize the name of the repository here.
   * `manifests_count` (String): The total number of packages available in this repository.
   * `history` (Array of Object): An array of the most recent updates. This array is ordered by `date`, and may be of any length.
-    * `date` (String): The date when the [`PackageManifest`] was updated (ISO 8601, UTC)
-    * `manifest` (Object):A serialized [`PackageManifest`], as described by the Nest specification.
+    * `date` (String): The date when the [`PackageManifest`] was updated (ISO 8601, UTC).
+    * `manifest` (Object): A serialized [`PackageManifest`], as described by the Nest specification.
 
 Example:
 
@@ -152,7 +152,7 @@ Example:
 
 ## `GET /api/pull`
 
-An array of all [`PackageManifest`] hosted by this repository.
+An array of all the [`PackageManifest`] hosted by this repository.
 
 *Request parameters*: None
 
@@ -160,7 +160,7 @@ An array of all [`PackageManifest`] hosted by this repository.
 
 *Response Content-Type*: `application/json`
 
-*Response body*: An array of [`PackageManifest`], as described by the Nest specification. The elements are not sorted.
+*Response body*: An array of [`PackageManifest`]s, as described by the Nest specification. The elements are not sorted.
 
 Example:
 
@@ -276,7 +276,7 @@ Example:
 
 ## `GET /api/p/<category>/<name>`
 
-Return all the metadata of a package identified with its name and category.
+Return all the metadata of a package identified by its name and category.
 
 *Request parameters*:
 
@@ -331,7 +331,7 @@ retrieves all metadata for all versions of a package.
 
   * `category` (String): The name of the category, following any convention described by the Nest specification.
   * `name` (String): The name of the package, following any convention described by the Nest specification.
-  * `version` (String): The version the package, following any convention described by the Nest specification.
+  * `version` (String): The version of the package, following any convention described by the Nest specification.
 
 *Response code*: 204 No Content
 
@@ -347,7 +347,7 @@ Download a package in its NPF (`.nest`) form.
 
   * `category` (String): The name of the category, following any convention described by the Nest specification.
   * `name` (String): The name of the package, following any convention described by the Nest specification.
-  * `version` (String): The version the package, following any convention described by the Nest specification.
+  * `version` (String): The version of the package, following any convention described by the Nest specification.
 
 *Response code*: 200 OK
 
@@ -363,13 +363,13 @@ Retrieve the content of a package.
 
   * `category` (String): The name of the category, following any convention described by the Nest specification.
   * `name` (String): The name of the package, following any convention described by the Nest specification.
-  * `version` (String): The version the package, following any convention described by the Nest specification.
+  * `version` (String): The version of the package, following any convention described by the Nest specification.
 
 *Response code*: 200 OK
 
 *Response Content-Type*: `application/json`
 
-*Response body*: An array of absolute paths, each one being a file contained in this package.
+*Response body*: An array of absolute paths, with each one being a file contained in this package.
 
 Example (`GET /api/p/sys-lib/readline/8.0.0/content`):
 
@@ -442,7 +442,7 @@ Remove a package.
 
   * `category` (String): The name of the category, following any convention described by the Nest specification.
   * `name` (String): The name of the package, following any convention described by the Nest specification.
-  * `version` (String): The version the package, following any convention described by the Nest specification.
+  * `version` (String): The version of the package, following any convention described by the Nest specification.
 
 *Response code*: 204 No Content
 
@@ -452,9 +452,9 @@ Remove a package.
 
 ## `POST /api/upload`
 
-Upload a package from its NPF (`.nest) form. Its name, category and version are determined automatically from its content.
+Upload a package from its NPF (`.nest`) form. Its name, category and version are determined automatically from its content.
 
-**Note**: As of now, multipart is **not** supported. Therefore, the body must be the exact content of the uploaded file.
+**Note**: As of now, multipart is **not** supported. Therefore, the body must have the exact same content than the uploaded file.
 
 **Note**: The package must be in the NPF format. The best way to generate a package under this format is to use [`nbuild`](https://github.com/raven-os/nbuild).
 
@@ -475,8 +475,8 @@ Search for packages.
 *Request parameters*:
 
   * `q` (String): The content to look for.
-  * `exact_match` (Bool): Indicates whether the match can be partial or must be exact. If not specified, the default value is `false`.
   * `search_by` (String): The kind of data `q` shall be a part of. As of now, only those value are supported: `name`, `category`, `description`, `tags` and `content`.
+  * `exact_match` (Bool): Indicates whether the match can be partial or must be exact. If not specified, the default value is `false`.
 
 *Response code*: 200 OK
 
@@ -484,10 +484,10 @@ Search for packages.
 
 *Response body*: The body depends on the value of `search_by`:
 
-  * If `search_by` is either `name`, `category`, `description` or `tags`, the content is an array of [`PackageManifest`]s (as described by the Nest specification) that match the given query.
-  * Else if `search_by` is `content`, the content is an array of objects with the following elements:
-    * `path` (String): The absolute path that matches the query
-    * `name` (String): The [full name] (as described by the Nest specification) of the package that matches the query
+  * If `search_by` is either `name`, `category`, `description` or `tags`, the content of the response body is an array of [`PackageManifest`]s (as described by the Nest specification) that match the given query.
+  * Else if `search_by` is `content`, the content of the response body is an array of objects with the following elements:
+    * `path` (String): The absolute path that matches the query.
+    * `name` (String): The full name (as described by the Nest specification) of the package that matches the query.
     * `all_version` (Bool): A flag that indicates if all versions of the package matched the query, or if only some of them did.
 
 Example 1 (`GET /api/search&q=libreadline.so&search_by=content`)

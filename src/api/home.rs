@@ -11,7 +11,7 @@ use crate::package::NPFManager;
 pub fn home(config: State<Arc<Config>>, npf_manager: State<Arc<RwLock<NPFManager>>>) -> JsonValue {
     let npf_manager = npf_manager
         .read()
-        .expect("can't open the NPF manager in read-only mode");
+        .expect("cannot open the NPF manager in read-only mode");
 
     let manifests_count = npf_manager.manifests_count();
     let history = npf_manager.history().entries();

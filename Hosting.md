@@ -4,7 +4,7 @@ Hosting a custom instance of Nest-Server is fairly simple.
 
 First, edit the file `Repository.toml`.
 
-Specify the `name` of the repository (remember it must follow any requirements specified by the Nest specification) and its `pretty_name` (The same than the name, without the restrinctions).
+Specify the `name` of the repository (remember that it must follow any requirements specified by the Nest specification) and its `pretty_name` (the same than the name, without the restrictions).
 
 You should also set the `auth_token` to some custom and complex secure password. It will be used to remotely upload or remove any package on the server.
 
@@ -52,7 +52,7 @@ Remember that you need the latest Rust nightly to properly compile this project.
 
 ## Managing packages
 
-There are two ways to add a pacakge:
+There are two ways to add a package:
 
   * Either by moving its NPF (`.nest`) to the right place in the `package_dir` folder (Note that it **must** be named `<package_dir>/<category>/<name>/<name>-<version>.nest`)
   * Or by uploading it using the `GET /api/upload` route (See `API.md`).

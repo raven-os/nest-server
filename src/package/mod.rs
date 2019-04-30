@@ -38,7 +38,7 @@ pub struct NPFPackageIDError(String);
 /// Result of a content search
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Hash, Debug)]
 pub struct ContentSearchResult {
-    path: String,
+    path: PathBuf,
     name: PackageFullName,
     all_versions: bool,
 }
@@ -46,7 +46,7 @@ pub struct ContentSearchResult {
 /// Manager of all NPF.
 ///
 /// This structure transparently caches the PackageManifest and list of files
-/// of each packages.
+/// of each package.
 pub struct NPFManager {
     config: Arc<Config>,
     manifests: HashMap<PackageShortName, PackageManifest>,
@@ -74,7 +74,7 @@ impl NPFManager {
         &self.history
     }
 
-    /// Finds the manifest with the given name.
+    /// Find the manifest with the given name.
     ///
     /// The search is cached to speed-up the results.
     pub fn manifest_of(&self, name: &PackageShortName) -> Option<&PackageManifest> {
@@ -88,7 +88,7 @@ impl NPFManager {
     /// If a package doesn't have a content (i.e. it is a virtual package), this function returns `Ok(None)`.
     ///
     /// The search is cached to speed-up the results.
-    pub fn content_of(&self, id: &PackageID) -> Result<Option<Vec<String>>, Error> {
+    pub fn content_of(&self, id: &PackageID) -> Result<Option<Vec<PathBuf>>, Error> {
         let cache_entry = NPFCacheEntry::from(&self.config, &id);
         if cache_entry.exists() {
             cache_entry.filesmap()
@@ -108,7 +108,7 @@ impl NPFManager {
         let mut results = Vec::new();
 
         for manifest in self.manifests.values() {
-            let mut counters: HashMap<String, usize> = HashMap::new();
+            let mut counters: HashMap<PathBuf, usize> = HashMap::new();
 
             for version in manifest.versions().keys() {
                 let id = PackageID::from_full_name(manifest.full_name(), version.clone());
@@ -134,40 +134,40 @@ impl NPFManager {
         Ok(results)
     }
 
-    /// Parses the path of a NPF to retrieve the [`PackageID`] it represents.
+    /// Parse the path of an NPF to retrieve the [`PackageID`] it represents.
     ///
     ///  The NPF must have the following relative path and name: `./<category>/<name>/<name>-<version>.nest`.
     fn parse_npf_path(&self, npf: &Path) -> Result<PackageID, Error> {
         let rel_path = npf.strip_prefix(self.config.package_dir())?;
-        let invalid_npf = ParseNPFPathError(npf.to_path_buf().display().to_string());
+        let invalid_npf = || ParseNPFPathError(npf.to_path_buf().display().to_string());
 
         let category_name = rel_path
             .parent()
             .and_then(Path::parent)
             .and_then(Path::file_name)
             .and_then(OsStr::to_str)
-            .ok_or(invalid_npf.clone())?;
+            .ok_or_else(invalid_npf)?;
 
         let package_name1 = rel_path
             .parent()
             .and_then(Path::file_name)
             .and_then(OsStr::to_str)
-            .ok_or(invalid_npf.clone())?;
+            .ok_or_else(invalid_npf)?;
 
         let mut file_parts = rel_path
             .file_stem()
             .and_then(OsStr::to_str)
-            .ok_or(invalid_npf.clone())?
+            .ok_or_else(invalid_npf)?
             .split("-");
 
         // Split the filename
-        let package_name2 = file_parts.next().ok_or(invalid_npf.clone())?;
-        let version = file_parts.next().ok_or(invalid_npf.clone())?;
+        let package_name2 = file_parts.next().ok_or_else(invalid_npf)?;
+        let version = file_parts.next().ok_or_else(invalid_npf)?;
 
-        // Ensure there is no more parts after the version in the file name.
+        // Ensure there are no more parts after the version in the file name.
         // And that `package_name1` is equal to `package_name2`
         if file_parts.next().is_some() || package_name1 != package_name2 {
-            Err(invalid_npf.clone())?;
+            Err(invalid_npf())?;
         }
 
         let category = CategoryName::parse(category_name)?;
@@ -463,7 +463,7 @@ impl NPFCacheEntry {
     }
 
     /// Return, if it exists, a list of all the content present in the package.
-    pub fn filesmap(&self) -> Result<Option<Vec<String>>, Error> {
+    pub fn filesmap(&self) -> Result<Option<Vec<PathBuf>>, Error> {
         if self.filesmap_path.exists() {
             let file = File::open(&self.filesmap_path)?;
             Ok(Some(serde_json::from_reader(file)?))
@@ -473,7 +473,7 @@ impl NPFCacheEntry {
     }
 
     /// Test if the package contains the given file, returning all the paths that matches the given query
-    pub fn contains(&self, query: &str, exact_match: bool) -> Result<Vec<String>, Error> {
+    pub fn contains(&self, query: &str, exact_match: bool) -> Result<Vec<PathBuf>, Error> {
         let mut res = Vec::new();
 
         if let Some(filesmap) = self.filesmap()? {
@@ -488,9 +488,9 @@ impl NPFCacheEntry {
             for file in filesmap {
                 Searcher::new().search_slice(
                     &matcher,
-                    file.as_bytes(),
+                    file.to_string_lossy().as_bytes(),
                     UTF8(|_, _| {
-                        res.push(file.to_string());
+                        res.push(file.clone());
                         Ok(true)
                     }),
                 )?;

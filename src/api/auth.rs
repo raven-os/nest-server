@@ -25,7 +25,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for AuthToken {
 
         let token = auth_tokens[0]; // OK
 
-        // That's not exactly high level cryptography, but honnestly, who cares about security anyway ¯\_(ツ)_/¯.
+        // That's not exactly high-level cryptography, but honestly, who cares about security anyway ¯\_(ツ)_/¯.
         if config.auth_token() == token {
             Outcome::Success(AuthToken(token.to_string()))
         } else {
