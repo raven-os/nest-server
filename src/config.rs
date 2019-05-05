@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use failure::{Error, ResultExt};
 use lazy_static::lazy_static;
 use libnest::package::RepositoryName;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 lazy_static! {
     static ref PATH_CONFIG: &'static Path = Path::new("./Repository.toml");

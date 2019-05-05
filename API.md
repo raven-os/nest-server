@@ -152,7 +152,7 @@ Example:
 
 ## `GET /api/pull`
 
-An array of all the [`PackageManifest`] hosted by this repository.
+An array of all the [`PackageManifest`]s hosted by this repository.
 
 *Request parameters*: None
 

@@ -4,7 +4,7 @@ pub mod versions;
 
 use libnest::package::VersionData;
 use semver::Version;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Debug)]
 struct PackageVersion {

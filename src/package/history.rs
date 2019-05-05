@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 
 use chrono::{DateTime, Utc};
 use libnest::package::PackageManifest;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 static HISTORY_SIZE: usize = 15;
 

@@ -21,7 +21,7 @@ use libnest::package::{
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use semver::Version;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use tar::Archive;
 
 use crate::config::Config;
@@ -100,7 +100,7 @@ impl NPFManager {
     /// Find the packages that contain the given file.
     ///
     /// This search has a terrible complexity, it is the current worst-case of this cache algorithm.
-    pub fn container_of(
+    pub fn browse_packages_for_file(
         &self,
         content: &str,
         exact_match: bool,

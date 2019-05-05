@@ -18,7 +18,7 @@ pub fn search_content(
 
     Json(
         npf_manager
-            .container_of(&q, exact_match.unwrap_or_default())
+            .browse_packages_for_file(&q, exact_match.unwrap_or_default())
             .unwrap_or_default(),
     )
 }

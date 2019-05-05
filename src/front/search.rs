@@ -22,7 +22,9 @@ pub fn search_content(
     // FIXME
     let results = {
         if q != "" {
-            npf_manager.container_of(&q, false).unwrap_or_default()
+            npf_manager
+                .browse_packages_for_file(&q, false)
+                .unwrap_or_default()
         } else {
             Vec::new()
         }

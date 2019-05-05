@@ -1,8 +1,31 @@
-use failure::Error;
 use libnest::package::{CategoryName, PackageName};
-use rocket::http::RawStr;
-use rocket::request::FromParam;
 use semver::Version;
+
+macro_rules! impl_into_value {
+    ($Type:ident, $Value:ident) => {
+        impl Into<$Value> for $Type {
+            fn into(self) -> $Value {
+                self.value
+            }
+        }
+    };
+}
+
+macro_rules! impl_from_param {
+    ($Type:ident, $Value:ident) => {
+        impl<'a> ::rocket::request::FromParam<'a> for $Type {
+            type Error = ::failure::Error;
+
+            fn from_param(param: &'a ::rocket::http::RawStr) -> Result<$Type, Self::Error> {
+                let decoded_param = param.percent_decode()?;
+
+                Ok($Type {
+                    value: $Value::parse(decoded_param.as_ref())?,
+                })
+            }
+        }
+    };
+}
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct CategoryNameParam {
@@ -15,23 +38,8 @@ impl CategoryNameParam {
     }
 }
 
-impl<'a> FromParam<'a> for CategoryNameParam {
-    type Error = Error;
-
-    fn from_param(param: &'a RawStr) -> Result<Self, Self::Error> {
-        let decoded_param = param.percent_decode()?;
-
-        Ok(CategoryNameParam {
-            value: CategoryName::parse(decoded_param.as_ref())?,
-        })
-    }
-}
-
-impl Into<CategoryName> for CategoryNameParam {
-    fn into(self) -> CategoryName {
-        self.value
-    }
-}
+impl_into_value!(CategoryNameParam, CategoryName);
+impl_from_param!(CategoryNameParam, CategoryName);
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct PackageNameParam {
@@ -44,23 +52,8 @@ impl PackageNameParam {
     }
 }
 
-impl<'a> FromParam<'a> for PackageNameParam {
-    type Error = Error;
-
-    fn from_param(param: &'a RawStr) -> Result<Self, Self::Error> {
-        let decoded_param = param.percent_decode()?;
-
-        Ok(PackageNameParam {
-            value: PackageName::parse(decoded_param.as_ref())?,
-        })
-    }
-}
-
-impl Into<PackageName> for PackageNameParam {
-    fn into(self) -> PackageName {
-        self.value
-    }
-}
+impl_into_value!(PackageNameParam, PackageName);
+impl_from_param!(PackageNameParam, PackageName);
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct VersionParam {
@@ -73,20 +66,5 @@ impl VersionParam {
     }
 }
 
-impl<'a> FromParam<'a> for VersionParam {
-    type Error = Error;
-
-    fn from_param(param: &'a RawStr) -> Result<Self, Self::Error> {
-        let decoded_param = param.percent_decode()?;
-
-        Ok(VersionParam {
-            value: Version::parse(decoded_param.as_ref())?,
-        })
-    }
-}
-
-impl Into<Version> for VersionParam {
-    fn into(self) -> Version {
-        self.value
-    }
-}
+impl_into_value!(VersionParam, Version);
+impl_from_param!(VersionParam, Version);
