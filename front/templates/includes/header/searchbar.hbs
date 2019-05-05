@@ -1,0 +1,20 @@
+<div class="d-inline-flex w-100">
+<form class="searchbar w-100">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <button class="btn bg-white bg-accent-hover bg-accent-deepfocus caret-off dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-cog"></i></button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item bg-accent-hover search-name" href="#">Name</a>
+                <a class="dropdown-item bg-accent-hover search-category" href="#">Category</a>
+                <a class="dropdown-item bg-accent-hover search-description" href="#">Description</a>
+                <a class="dropdown-item bg-accent-hover search-tags" href="#">Tags</a>
+                <a class="dropdown-item bg-accent-hover search-content" href="#">Content</a>
+            </div>
+        </div>
+        <input type="text" class="form-control border-none" placeholder="Search for packages (e.g., Firefox)" value="{{query}}"/>
+        <div class="input-group-append">
+            <button class="btn bg-white bg-accent-hover searchbar-search" type="button"><i class="fa fa-search"></i></button>
+        </div>
+    </div>
+</form>
+</div>

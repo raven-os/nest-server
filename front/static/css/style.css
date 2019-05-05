@@ -1,0 +1,174 @@
+/* -----------------------------------
+General - Recoloring
+----------------------------------- */
+
+:root {
+    --accent: #ed254e;
+    --light-accent: #ed4d6e;
+    --primary: #f7f4f8;
+    --white: #ffffff;
+    --light-grey: #eee;
+    --mid-grey: #e2e2e2;
+    --primary-dark: #343a40;
+}
+
+body {
+    background: var(--light-grey);
+    color: var(--primary-dark);
+    font-family: "Source sans pro", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+a {
+    color: var(--accent);
+}
+
+a:hover, a:active, a:focus {
+    color: var(--accent);
+}
+
+hr {
+    border-color: var(--accent);
+}
+
+/* Highlight the whole input group instead of each elements */
+
+.input-group:focus-within {
+    border-color: var(--accent);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px var(--accent);
+}
+
+.input-group *:focus-within {
+    box-shadow: none;
+}
+
+/* -----------------------------------
+Custom rules
+----------------------------------- */
+
+.text-white {
+    color: var(--white) !important;
+}
+
+.text-dark {
+    color: var(--dark) !important;
+}
+
+.text-accent {
+    color: var(--accent) !important;
+}
+
+.text-light-accent {
+    color: var(--light-accent) !important;
+}
+
+.bg-accent {
+    background-color: var(--accent) !important;
+    color: var(--white);
+}
+
+.bg-accent-hover:hover {
+    background-color: var(--accent) !important;
+    color: var(--white);
+}
+
+.bg-accent-focus:focus {
+    background-color: var(--accent) !important;
+    color: var(--white);
+}
+
+.bg-accent-deepfocus:focus-within {
+    background-color: var(--accent) !important;
+    color: var(--white);
+}
+
+.bg-light-accent {
+    background-color: var(--light-accent) !important;
+    color: var(--white);
+}
+
+.bg-light-accent-hover:hover {
+    background-color: var(--light-accent) !important;
+    color: var(--white);
+}
+
+.bg-light-accent-focus:focus {
+    background-color: var(--light-accent) !important;
+    color: var(--white);
+}
+
+.bg-light-accent-deepfocus:focus-within {
+    background-color: var(--light-accent) !important;
+    color: var(--white);
+}
+
+.bg-mid-grey {
+    background-color: var(--mid-grey) !important;
+    color: var(--dark);
+}
+
+.bg-mid-grey-hover:hover {
+    background-color: var(--mid-grey) !important;
+    color: var(--dark);
+}
+
+.bg-mid-grey-focus:focus {
+    background-color: var(--mid-grey) !important;
+    color: var(--dark);
+}
+
+.bg-mid-grey-deepfocus:focus-within {
+    background-color: var(--mid-grey) !important;
+    color: var(--dark);
+}
+
+.caret-off::before {
+    display: none !important;
+}
+
+.caret-off::after {
+    display: none !important;
+}
+
+.icn-width {
+    width: 1.8em;
+}
+
+/* -----------------------------------
+Search bars
+----------------------------------- */
+
+header .input-group input {
+    border: none;
+    background-clip: initial
+}
+
+/* -----------------------------------
+Tables
+----------------------------------- */
+
+.table {
+    table-layout:fixed;
+}
+
+
+/* -----------------------------------
+Content
+----------------------------------- */
+
+#full-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#full-container .content {
+    flex: 1 0 auto;
+    padding: 0px;
+}

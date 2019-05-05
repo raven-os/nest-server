@@ -1,0 +1,18 @@
+<nav class="navbar navbar-expand navbar-dark">
+    <div class="row w-100 px-0 mx-0">
+        <div class="col-lg-auto" align="center">
+            <a class="navbar-brand" href="/"><img src="/img/raven_logo.png"/></a>
+        </div>
+        <div class="col-lg-5 my-auto px-0">
+            {{> includes/header/searchbar this }}
+        </div>
+        <div class="col"></div>
+        <div class="col-lg-auto my-auto px-0" align="center">
+            <ul class="navbar-nav d-inline-flex">
+                {{#each links }}
+                <li><a class="nav-link {{#if active}} active {{/if}}" href="{{url}}">{{name}}</a></li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+</nav>

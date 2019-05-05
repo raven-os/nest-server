@@ -1,0 +1,53 @@
+{{#> layouts/base title=(concat "Content of " manifest.category "/" manifest.name " - " pretty_name " - Raven-OS Repository")}}
+    {{#*inline "content-block"}}
+        <div class="container">
+            <div class="row py-5"></div>
+            <div class="row">
+                <div class="col" align="center">
+                    <h1 class="display-4">
+                        <b><a href="/search?q={{manifest.category}}&search_by=category">{{manifest.category}}</a>/{{manifest.name}}</b>
+                    </h1>
+                </div>
+            </div>
+
+            <div class="row py-4"></div>
+
+            <div class="row">
+                <div class="col text-center">
+                    <h5><a href="/p/{{manifest.category}}/{{manifest.name}}">« Go back to the package's details</a></h5>
+                </div>
+            </div>
+            <div class="row py-3"></div>
+
+            {{> includes/snippet/title title="Content"}}
+
+            <div class="row">
+                <div class="col">
+                    <table class="table table-sm table-striped border">
+                        <tbody>
+                            {{#if files}}
+                                {{#each files}}
+                                <tr>
+                                    <td class="text-white text-truncate">
+                                        <kbd><b>{{this}}</b></kbd>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            {{else}}
+                                <tr>
+                                    <td class="container text-center py-3">
+                                        <i>This package doesn't have any content</i>
+                                    </td>
+                                </tr>
+                            {{/if}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row py-3"></div>
+
+        </div>
+    {{/inline}}
+{{/layouts/base}}
+

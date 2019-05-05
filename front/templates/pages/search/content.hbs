@@ -1,0 +1,42 @@
+{{#> layouts/search}}
+    {{#*inline "table-block"}}
+        <tr>
+            <th style="width: 30%;">Package</th>
+            <th style="width: 70%;">File</th>
+        </tr>
+        {{#each results}}
+        <tr class="bg-light-accent-hover">
+            <td class="text-white text-truncate">
+                {{#if all_versions}}
+                    <a class="text-white" href="/p/{{category_name name}}/{{package_name name}}">
+                        <b><kbd>{{category_name name}}/{{package_name name}}</kbd></b>
+                    </a>
+                {{else}}
+                    <a class="text-warning" href="/p/{{category_name name}}/{{package_name name}}">
+                        <b><kbd class="text-warning">{{category_name name}}/{{package_name name}}</kbd></b>
+                    </a>
+                {{/if}}
+            </td>
+            <td class="text-white text-truncate">
+                <b><kbd>{{path}}</kbd></b>
+            </td>
+        </tr>
+        {{/each}}
+    {{/inline}}
+
+    {{#*inline "search-note"}}
+        {{#if results_len}}
+            <div class="row py-3"></div>
+
+            <div class="row">
+                <div class="col text-center">
+                    <div class="alert alert-info" role="alert">
+                        <b>Note:</b> results <b><kbd class="text-warning">in yellow</kbd></b> represent a content that is not present in all versions of that package.
+                    </div>
+                </div>
+            </div>
+
+            <div class="row py-3"></div>
+        {{/if}}
+    {{/inline}}
+{{/layouts/search}}

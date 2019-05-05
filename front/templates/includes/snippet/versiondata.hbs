@@ -1,0 +1,79 @@
+<div class="row">
+    <div class="col-md">
+        {{> includes/snippet/title title=(concat "v" version " Metadata")}}
+        <div class="row">
+            <div class="col">
+                <table class="table table-striped border">
+                    <tbody>
+                        <tr>
+                            <th><i class="fas fa-code-branch icn-width"></i><b>Version:</b></th>
+                            <td><kbd><b>{{version}}</b></kbd></td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-crosshairs icn-width"></i><b>Slot:</b></th>
+                            {{#if metadata.slot }}
+                                <td><kbd><b>{{metadata.slot}}</b></kbd></td>
+                            {{else}}
+                                <td><i>None</i></td>
+                            {{/if}}
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-flask icn-width"></i><b>Kind:</b></th>
+                            <td>{{capitalize metadata.kind}}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-calendar icn-width"></i><b>Last Update:</b></th>
+                            <td>{{timeago metadata.wrap_date}}</td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-file-alt icn-width"></i><b>Content:</b></th>
+                            <td>
+                                <a href="/p/{{manifest.category}}/{{manifest.name}}/{{version}}/content">
+                                    See the content of this version
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-download icn-width"></i><b>Download:</b></th>
+                            <td>
+                                <a href="/api/p/{{manifest.category}}/{{manifest.name}}/{{version}}/download">
+                                    Download this version
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md">
+
+        {{> includes/snippet/title title=(concat "v" this.version " Dependencies")}}
+
+        <div class="row">
+            <div class="col">
+                <table class="table table-sm table-striped border">
+                    <tbody>
+                        {{#if metadata.dependencies }}
+                            {{#each metadata.dependencies }}
+                            <tr>
+                                <td class="text-truncate text-white">
+                                    <kbd><b>{{repository_name @key}}::<a href="/p/{{category_name @key}}/{{package_name @key}}" class="text-light-accent">{{category_name @key}}/{{package_name @key}}</a>#{{this}}</b></kbd>
+                                    <br>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        {{else}}
+                            <tr>
+                                <td class="container text-center py-3">
+                                    <i>There is no dependency for this version</i>
+                                </td>
+                            </tr>
+                        {{/if}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
