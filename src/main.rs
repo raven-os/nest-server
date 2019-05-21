@@ -22,9 +22,6 @@ use crate::package::notify;
 use crate::package::NPFManager;
 
 fn main() -> Result<(), Error> {
-    // Clean leftovers from previous runs
-    package::clean_tmp_files()?;
-
     // Load the configuration
     let config = Arc::new(Config::load()?);
 
@@ -98,9 +95,5 @@ fn main() -> Result<(), Error> {
         .manage(config)
         .manage(npf_manager)
         .launch();
-
-    // Clean leftovers of current run
-    package::clean_tmp_files()?;
-
     Ok(())
 }

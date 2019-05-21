@@ -16,7 +16,11 @@ pub fn upload(data: Data, config: State<Arc<Config>>, _token: AuthToken) -> Stat
     let tmp_path = gen_tmp_filename();
 
     let _: Result<(), Error> = try {
-        // Write data to /tmp
+        // Write data to /tmp/nest-server/
+        if let Some(parent) = tmp_path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+
         let mut file = File::create(&tmp_path)?;
         io::copy(&mut data.open(), &mut file)?;
 

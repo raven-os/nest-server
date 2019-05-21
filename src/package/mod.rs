@@ -401,7 +401,7 @@ impl NPFCacheEntry {
         let mut archive = Archive::new(npf_file);
         let tmp_extract_path = gen_tmp_filename();
 
-        fs::create_dir(&tmp_extract_path)?;
+        fs::create_dir_all(&tmp_extract_path)?;
 
         let res: Result<_, Error> = try {
             archive.unpack(&tmp_extract_path)?;
@@ -517,22 +517,7 @@ pub fn gen_tmp_filename() -> PathBuf {
         .take(10)
         .collect();
 
-    PathBuf::from("/tmp").join(&format!("nest_{}", name))
-}
-
-/// Remove all files or directories generated with [`gen_tmp_filename`].
-pub fn clean_tmp_files() -> Result<(), Error> {
-    for path in glob::glob("/tmp/nest_*")? {
-        let path = path?;
-        if let Ok(md) = fs::metadata(&path) {
-            if md.is_dir() {
-                fs::remove_dir_all(path)?;
-            } else {
-                fs::remove_file(path)?;
-            }
-        }
-    }
-    Ok(())
+    PathBuf::from("/tmp/nest-server").join(&format!("nest_{}", name))
 }
 
 /// Opens a NPF and retrieve the [`PackageID`] of the package.
@@ -544,7 +529,7 @@ pub fn get_package_id_from_npf<P: AsRef<Path>>(
     let mut archive = Archive::new(npf_file);
     let tmp_extract_path = gen_tmp_filename();
 
-    fs::create_dir(&tmp_extract_path)?;
+    fs::create_dir_all(&tmp_extract_path)?;
 
     let res: Result<_, Error> = try {
         archive.unpack(&tmp_extract_path)?;
