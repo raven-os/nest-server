@@ -95,5 +95,6 @@ fn main() -> Result<(), Error> {
         .manage(config)
         .manage(npf_manager)
         .launch();
+
     Ok(())
 }

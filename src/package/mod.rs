@@ -517,7 +517,7 @@ pub fn gen_tmp_filename() -> PathBuf {
         .take(10)
         .collect();
 
-    PathBuf::from("/tmp/nest-server").join(&format!("nest_{}", name))
+    Path::new("/tmp/nest-server").join(&format!("nest_{}", name))
 }
 
 /// Opens a NPF and retrieve the [`PackageID`] of the package.
