@@ -1,8 +1,9 @@
+use std::env;
 use std::fs::{self, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 
-use failure::{Error, ResultExt};
+use failure::{Error, ResultExt, format_err};
 use lazy_static::lazy_static;
 use libnest::package::RepositoryName;
 use serde::{Deserialize, Serialize};
@@ -18,6 +19,7 @@ pub struct Config {
     package_dir: PathBuf,
     cache_dir: PathBuf,
     links: Vec<Link>,
+    #[serde(default)]
     auth_token: String,
 }
 
@@ -52,6 +54,14 @@ impl Config {
 
         config.cache_dir =
             fs::canonicalize(&config.cache_dir).context(config.cache_dir.display().to_string())?;
+
+        if let Some(value) = env::var_os("RAVEN_NEST_SERVER_AUTH_TOKEN") {
+            config.auth_token = value.to_string_lossy().to_string();
+        }
+
+        if config.auth_token.is_empty() {
+            Err(format_err!("the authentication token is either empty or not present in both environment and configuration file"))?;
+        }
 
         Ok(config)
     }
