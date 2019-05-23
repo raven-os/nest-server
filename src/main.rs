@@ -100,6 +100,7 @@ fn main() {
             .manage(npf_manager)
             .launch();
     };
+
     if let Err(e) = res {
         println!("Error: {}", e);
     }
