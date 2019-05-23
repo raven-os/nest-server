@@ -28,9 +28,13 @@
                         <tr>
                             <th><i class="fas fa-file-alt icn-width"></i><b>Content:</b></th>
                             <td>
-                                <a href="/p/{{manifest.category}}/{{manifest.name}}/{{version}}/content">
-                                    See the content of this version
-                                </a>
+                                {{#if (eq metadata.kind "virtual") }}
+                                    <i>Virtual packages don't have any content</i>
+                                {{else}}
+                                    <a href="/p/{{manifest.category}}/{{manifest.name}}/{{version}}/content">
+                                        See the content of this version
+                                    </a>
+                                {{/if}}
                             </td>
                         </tr>
                         <tr>

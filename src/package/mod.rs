@@ -15,8 +15,8 @@ use grep::regex::RegexMatcher;
 use grep::searcher::sinks::UTF8;
 use grep::searcher::Searcher;
 use libnest::package::{
-    CategoryName, Kind, Manifest, PackageFullName, PackageID, PackageManifest, PackageName,
-    PackageShortName, VersionData,
+    CategoryName, Kind, Manifest, NPFExplorer, PackageFullName, PackageID, PackageManifest,
+    PackageName, PackageShortName, VersionData,
 };
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
@@ -158,15 +158,14 @@ impl NPFManager {
             .file_stem()
             .and_then(OsStr::to_str)
             .ok_or_else(invalid_npf)?
-            .split("-");
+            .rsplitn(2, "-");
 
         // Split the filename
         let package_name2 = file_parts.next().ok_or_else(invalid_npf)?;
         let version = file_parts.next().ok_or_else(invalid_npf)?;
 
-        // Ensure there are no more parts after the version in the file name.
-        // And that `package_name1` is equal to `package_name2`
-        if file_parts.next().is_some() || package_name1 != package_name2 {
+        // Ensure that `package_name1` is equal to `package_name2`
+        if package_name1 != package_name2 {
             Err(invalid_npf())?;
         }
 
@@ -383,7 +382,7 @@ impl NPFCacheEntry {
             let npf_modified = fs::metadata(&self.npf_path)?.modified()?;
             let manifest_modified = fs::metadata(&self.manifest_path)?.modified()?;
             if self.filesmap_path.exists() {
-                let filesmap_modified = fs::metadata(&self.manifest_path)?.modified()?;
+                let filesmap_modified = fs::metadata(&self.filesmap_path)?.modified()?;
                 Ok(manifest_modified < npf_modified && filesmap_modified < npf_modified)
             } else {
                 Ok(manifest_modified < npf_modified)
@@ -396,29 +395,24 @@ impl NPFCacheEntry {
     /// Fill the cache entry of the given NPF
     ///
     /// This function explores the NPF by extracting it in a temporary folder.
-    pub fn fill_with<P: AsRef<Path>>(&mut self, npf: P) -> Result<(), Error> {
-        let npf_file = File::open(&npf)?;
-        let mut archive = Archive::new(npf_file);
-        let tmp_extract_path = gen_tmp_filename();
+    pub fn fill_with<P: AsRef<Path>>(&mut self, npf_path: P) -> Result<(), Error> {
+        let npf_explorer = NPFExplorer::open_at(npf_path.as_ref(), "/var/tmp/nest-server")?;
+        let manifest = npf_explorer.manifest();
 
-        fs::create_dir_all(&tmp_extract_path)?;
+        // If this is a reupload of an already existing package, remove the previous content
+        if self.exists() {
+            self.purge()?;
+        }
 
         let res: Result<_, Error> = try {
-            archive.unpack(&tmp_extract_path)?;
-
-            // Bunch of files to analyse/generate
-            let tmp_manifest_path = PathBuf::from(&tmp_extract_path).join("manifest.toml");
-            let tmp_data_path = PathBuf::from(&tmp_extract_path).join("data.tar.gz");
-            let tmp_filesmap_path = PathBuf::from(&tmp_extract_path).join("files.map");
-
-            // Open the Manifest to retrieve the package's metadata.
-            let manifest = open_manifest(&tmp_manifest_path)?;
+            let mut files = Vec::new();
 
             // Find all the files within `data.tar.gz` and write their path in `tmp_filesmap_path`.
             if manifest.kind() == Kind::Effective {
-                let mut files = Vec::new();
-                let data_file = File::open(tmp_data_path)?;
-                let mut data = Archive::new(GzDecoder::new(data_file));
+                let data_file = npf_explorer.open_data()?.ok_or_else(|| {
+                    format_err!("no data found even though the package is effective")
+                })?;
+                let mut data = Archive::new(GzDecoder::new(data_file.file()));
 
                 for entry in data.entries()? {
                     let entry = entry?;
@@ -436,30 +430,33 @@ impl NPFCacheEntry {
                     }
                     files.push(pretty_path.display().to_string());
                 }
-
-                let filesmap = File::create(&tmp_filesmap_path)?;
-                serde_json::to_writer(filesmap, &files)?;
-            }
-
-            // If this is a reupload of an already existing package, remove the previous content
-            if self.exists() {
-                self.purge()?;
             }
 
             // Copy all new files to their destination
-            // We do a copy and not a move because they may not share the same mountpoint
-
             fs::create_dir_all(&self.cache_path)?;
-            fs::copy(&tmp_manifest_path, &self.manifest_path)?;
-            fs::copy(&tmp_filesmap_path, &self.filesmap_path)?;
+
+            let mut new_manifest = File::create(&self.manifest_path)?;
+            io::copy(npf_explorer.open_manifest()?.file_mut(), &mut new_manifest)?;
+
+            let filesmap = File::create(&self.filesmap_path)?;
+            serde_json::to_writer(filesmap, &files)?;
         };
-        fs::remove_dir_all(&tmp_extract_path)?;
+
+        // Purge on error
+        if res.is_err() && self.exists() {
+            self.purge()?;
+        }
+
         res
     }
 
     /// Return the manifest of the package.
     pub fn manifest(&self) -> Result<Manifest, Error> {
-        open_manifest(&self.manifest_path)
+        let mut file = File::open(&self.manifest_path)?;
+        let mut content = String::new();
+        file.read_to_string(&mut content)?;
+
+        Ok(toml::from_str(&content)?)
     }
 
     /// Return, if it exists, a list of all the content present in the package.
@@ -501,14 +498,6 @@ impl NPFCacheEntry {
     }
 }
 
-fn open_manifest<P: AsRef<Path>>(path: P) -> Result<Manifest, Error> {
-    let mut file = File::open(path)?;
-    let mut content = String::new();
-    file.read_to_string(&mut content)?;
-
-    Ok(toml::from_str(&content)?)
-}
-
 /// Generate a valid path with a random component
 pub fn gen_tmp_filename() -> PathBuf {
     let mut rng = thread_rng();
@@ -517,29 +506,5 @@ pub fn gen_tmp_filename() -> PathBuf {
         .take(10)
         .collect();
 
-    Path::new("/tmp/nest-server").join(&format!("nest_{}", name))
-}
-
-/// Opens a NPF and retrieve the [`PackageID`] of the package.
-pub fn get_package_id_from_npf<P: AsRef<Path>>(
-    config: &Config,
-    npf: P,
-) -> Result<PackageID, Error> {
-    let npf_file = File::open(npf)?;
-    let mut archive = Archive::new(npf_file);
-    let tmp_extract_path = gen_tmp_filename();
-
-    fs::create_dir_all(&tmp_extract_path)?;
-
-    let res: Result<_, Error> = try {
-        archive.unpack(&tmp_extract_path)?;
-
-        // Open the Manifest to retrieve the package's metadata.
-        let tmp_manifest_path = PathBuf::from(&tmp_extract_path).join("manifest.toml");
-        let manifest = open_manifest(&tmp_manifest_path)?;
-
-        manifest.id(config.name().clone())
-    };
-    fs::remove_dir_all(&tmp_extract_path)?;
-    res
+    Path::new("/var/tmp/nest-server").join(&format!("nest_{}", name))
 }

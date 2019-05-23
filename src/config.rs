@@ -3,7 +3,7 @@ use std::fs::{self, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 
-use failure::{Error, ResultExt, format_err};
+use failure::{format_err, Error, ResultExt};
 use lazy_static::lazy_static;
 use libnest::package::RepositoryName;
 use serde::{Deserialize, Serialize};

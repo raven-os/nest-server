@@ -4,12 +4,13 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use failure::Error;
+use libnest::package::NPFExplorer;
 use rocket::http::Status;
 use rocket::{Data, State};
 
 use crate::api::auth::AuthToken;
 use crate::config::Config;
-use crate::package::{gen_tmp_filename, get_package_id_from_npf};
+use crate::package::gen_tmp_filename;
 
 #[post("/api/upload", data = "<data>")]
 pub fn upload(data: Data, config: State<Arc<Config>>, _token: AuthToken) -> Status {
@@ -24,7 +25,8 @@ pub fn upload(data: Data, config: State<Arc<Config>>, _token: AuthToken) -> Stat
         let mut file = File::create(&tmp_path)?;
         io::copy(&mut data.open(), &mut file)?;
 
-        let id = get_package_id_from_npf(&config, &tmp_path)?;
+        let npf_explorer = NPFExplorer::open_at(&tmp_path, "/var/tmp/nest-server")?;
+        let id = npf_explorer.manifest().id(config.name().clone());
 
         // Move file to its final destination: `./cache/<category>/<package>/<name>-<version>.nest`.
         let dst_path = PathBuf::from(config.package_dir())
