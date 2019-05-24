@@ -161,8 +161,8 @@ impl NPFManager {
             .rsplitn(2, "-");
 
         // Split the filename
-        let package_name2 = file_parts.next().ok_or_else(invalid_npf)?;
         let version = file_parts.next().ok_or_else(invalid_npf)?;
+        let package_name2 = file_parts.next().ok_or_else(invalid_npf)?;
 
         // Ensure that `package_name1` is equal to `package_name2`
         if package_name1 != package_name2 {
