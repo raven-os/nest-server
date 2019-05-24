@@ -138,3 +138,22 @@ pub fn concat(
 
     Ok(())
 }
+
+pub fn eq(
+    h: &Helper,
+    _: &Handlebars,
+    _: &Context,
+    _: &mut RenderContext,
+    out: &mut Output,
+) -> HelperResult {
+    let a = h.param(0);
+    let b = h.param(1);
+
+    if let (Some(a), Some(b)) = (a, b) {
+        if a.value() == b.value() {
+            out.write("1")?;
+        }
+    }
+
+    Ok(())
+}
