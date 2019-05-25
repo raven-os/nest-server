@@ -436,7 +436,7 @@ Example (`GET /api/p/sys-lib/readline/8.0.0/content`):
 
 Remove a package.
 
-**Note**: This route is protected by an authentification token, which must be specified in the `X-Auth-Token` HTTP header.
+**Note**: This route is protected by an authentication token, which must be specified in the `X-Auth-Token` HTTP header.
 
 *Request parameters*:
 
@@ -458,7 +458,7 @@ Upload a package from its NPF (`.nest`) form. Its name, category and version are
 
 **Note**: The package must be in the NPF format. The best way to generate a package under this format is to use [`nbuild`](https://github.com/raven-os/nbuild).
 
-**Note**: This route is protected by an authentification token, which must be specified in the `X-Auth-Token` HTTP header.
+**Note**: This route is protected by an authentication token, which must be specified in the `X-Auth-Token` HTTP header.
 
 *Request parameters*: None
 
