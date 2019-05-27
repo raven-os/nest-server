@@ -458,15 +458,33 @@ Upload a package from its NPF (`.nest`) form. Its name, category and version are
 
 **Note**: The package must be in the NPF format. The best way to generate a package under this format is to use [`nbuild`](https://github.com/raven-os/nbuild).
 
+**Note**: In order to ensure a fast response time to this request even if the NPF is huge, the NPF is parsed and made publicly visible asynchronously.
+Only a quick check of the package is done synchronously in order to find most erroneous NPF and yield the content of the reponse body.
+Therefore, there is a small amount of time after this request is received before the NPF is visible publicly. This amount of time is usually in milliseconds, but depends on the size of the uploaded package.
+
 **Note**: This route is protected by an authentication token, which must be specified in the `X-Auth-Token` HTTP header.
 
 *Request parameters*: None
 
-*Response code*: 204 No Content
+*Response code*: 200 OK Content
 
-*Response Content-Type*: None
+*Response Content-Type*: `application/json`
 
-*Response body*: None
+*Response fields*:
+
+  * `name` (String): the name of the uploaded package
+  * `category` (String): the category of the uploaded package
+  * `version` (String): the version of the uploaded package
+
+Example (`POST /api/upload`)
+
+```json
+{
+  "category":"sys-lib",
+  "name":"readline",
+  "version":"8.0.0"
+}
+```
 
 ## `GET /api/search&<q>&<search_by>&<exact_match>`
 
@@ -489,6 +507,8 @@ Search for packages.
     * `path` (String): The absolute path that matches the query.
     * `name` (String): The full name (as described by the Nest specification) of the package that matches the query.
     * `all_version` (Bool): A flag that indicates if all versions of the package matched the query, or if only some of them did.
+
+**Note**: Searches by content match only the last component of the path (the file name), not the full path.
 
 Example 1 (`GET /api/search&q=libreadline.so&search_by=content`)
 
