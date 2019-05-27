@@ -11,9 +11,6 @@ use std::sync::Arc;
 
 use failure::{format_err, Error, Fail};
 use flate2::read::GzDecoder;
-use grep::regex::RegexMatcher;
-use grep::searcher::sinks::UTF8;
-use grep::searcher::Searcher;
 use libnest::package::{
     CategoryName, Kind, Manifest, NPFExplorer, PackageFullName, PackageID, PackageManifest,
     PackageName, PackageShortName, VersionData,
@@ -474,23 +471,25 @@ impl NPFCacheEntry {
         let mut res = Vec::new();
 
         if let Some(filesmap) = self.filesmap()? {
-            let matcher = {
-                if exact_match {
-                    RegexMatcher::new_line_matcher(&format!("^{}$", regex::escape(query)))?
-                } else {
-                    RegexMatcher::new_line_matcher(&format!("^.*{}.*$", regex::escape(query)))?
-                }
-            };
+            let filesmap = filesmap
+                .iter()
+                .filter(|filesmap| filesmap.file_name().is_some())
+                .map(|filesmap| (filesmap.file_name().unwrap().to_str(), filesmap))
+                .filter(|(filename, _)| filename.is_some())
+                .map(|(filename, path)| (filename.unwrap(), path));
 
-            for file in filesmap {
-                Searcher::new().search_slice(
-                    &matcher,
-                    file.to_string_lossy().as_bytes(),
-                    UTF8(|_, _| {
-                        res.push(file.clone());
-                        Ok(true)
-                    }),
-                )?;
+            if exact_match {
+                for (filename, path) in filesmap {
+                    if filename == query {
+                        res.push(path.clone());
+                    }
+                }
+            } else {
+                for (filename, path) in filesmap {
+                    if filename.contains(query) {
+                        res.push(path.clone());
+                    }
+                }
             }
         }
 
