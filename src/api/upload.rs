@@ -7,16 +7,18 @@ use failure::Error;
 use libnest::package::NPFExplorer;
 use rocket::http::Status;
 use rocket::{Data, State};
+use rocket_contrib::json;
+use rocket_contrib::json::{JsonValue};
 
 use crate::api::auth::AuthToken;
 use crate::config::Config;
 use crate::package::gen_tmp_filename;
 
 #[post("/api/upload", data = "<data>")]
-pub fn upload(data: Data, config: State<Arc<Config>>, _token: AuthToken) -> Status {
+pub fn upload(data: Data, config: State<Arc<Config>>, _token: AuthToken) -> Result<JsonValue, Status> {
     let tmp_path = gen_tmp_filename();
 
-    let _: Result<(), Error> = try {
+    let r: Result<JsonValue, Error> = try {
         // Write data to /tmp/nest-server/
         if let Some(parent) = tmp_path.parent() {
             fs::create_dir_all(parent)?;
@@ -41,9 +43,17 @@ pub fn upload(data: Data, config: State<Arc<Config>>, _token: AuthToken) -> Stat
         // We do a copy and not a rename because `tmp_path` and `dst_path` may not share the same mountpoint
         // The file system notifier will finish the job and update the cache
         fs::copy(&tmp_path, &dst_path)?;
+
+        json!({
+            "name": id.name(),
+            "category": id.category(),
+            "version": id.version(),
+        })
     };
 
-    let _ = fs::remove_file(tmp_path);
+    if tmp_path.exists() {
+        let _ = fs::remove_file(tmp_path);
+    }
 
-    Status::NoContent
+    r.map_err(|_| Status::BadRequest)
 }
