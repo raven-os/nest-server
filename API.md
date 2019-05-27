@@ -459,7 +459,7 @@ Upload a package from its NPF (`.nest`) form. Its name, category and version are
 **Note**: The package must be in the NPF format. The best way to generate a package under this format is to use [`nbuild`](https://github.com/raven-os/nbuild).
 
 **Note**: In order to ensure a fast response time to this request even if the NPF is huge, the NPF is parsed and made publicly visible asynchronously.
-Only a quick check of the package is done synchronously in order to find most erroneous NPF and yield the content of the reponse body.
+Only a quick check of the package is done synchronously in order to find most erroneous NPFs and yield the content of the response body.
 Therefore, there is a small amount of time after this request is received before the NPF is visible publicly. This amount of time is usually in milliseconds, but depends on the size of the uploaded package.
 
 **Note**: This route is protected by an authentication token, which must be specified in the `X-Auth-Token` HTTP header.

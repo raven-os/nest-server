@@ -476,8 +476,7 @@ impl NPFCacheEntry {
                 .filter(|filesmap| filesmap.file_name().is_some())
                 .map(|filesmap| (filesmap.file_name().unwrap().to_str(), filesmap))
                 .filter(|(filename, _)| filename.is_some())
-                .map(|(filename, path)| (filename.unwrap(), path))
-            ;
+                .map(|(filename, path)| (filename.unwrap(), path));
 
             if exact_match {
                 for (filename, path) in filesmap {

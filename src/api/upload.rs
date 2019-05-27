@@ -8,14 +8,18 @@ use libnest::package::NPFExplorer;
 use rocket::http::Status;
 use rocket::{Data, State};
 use rocket_contrib::json;
-use rocket_contrib::json::{JsonValue};
+use rocket_contrib::json::JsonValue;
 
 use crate::api::auth::AuthToken;
 use crate::config::Config;
 use crate::package::gen_tmp_filename;
 
 #[post("/api/upload", data = "<data>")]
-pub fn upload(data: Data, config: State<Arc<Config>>, _token: AuthToken) -> Result<JsonValue, Status> {
+pub fn upload(
+    data: Data,
+    config: State<Arc<Config>>,
+    _token: AuthToken,
+) -> Result<JsonValue, Status> {
     let tmp_path = gen_tmp_filename();
 
     let r: Result<JsonValue, Error> = try {
