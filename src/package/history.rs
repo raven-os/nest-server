@@ -57,6 +57,11 @@ impl History {
         self.entries.clear();
     }
 
+    pub fn remove_manifest(&mut self, manifest: &PackageManifest) {
+        self.entries
+            .retain(|entry| entry.manifest().full_name() != manifest.full_name());
+    }
+
     pub fn add_manifest(&mut self, manifest: PackageManifest) {
         let last_version = manifest
             .versions()

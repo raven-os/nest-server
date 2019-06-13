@@ -286,6 +286,7 @@ impl NPFManager {
         if let Some(manifest) = self.manifests.get_mut(&short_name) {
             manifest.versions_mut().remove(id.version());
             if manifest.versions().len() == 0 {
+                self.history.remove_manifest(manifest);
                 self.manifests.remove(&short_name);
             }
         }
