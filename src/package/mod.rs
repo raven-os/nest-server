@@ -151,15 +151,35 @@ impl NPFManager {
             .and_then(OsStr::to_str)
             .ok_or_else(invalid_npf)?;
 
-        let mut file_parts = rel_path
+        // Here's the tricky part.
+        //
+        // NPF are named `name-version`, which can lead to hard names to parse, like
+        // `linux-doc-5.0.1-z`.
+        //
+        // The trick is to split on the `-` and find the first part with a `.`: that's where
+        // the version starts.
+
+        let file_parts = rel_path
             .file_stem()
             .and_then(OsStr::to_str)
             .ok_or_else(invalid_npf)?
-            .rsplitn(2, "-");
+            .split("-");
 
-        // Split the filename
-        let version = file_parts.next().ok_or_else(invalid_npf)?;
-        let package_name2 = file_parts.next().ok_or_else(invalid_npf)?;
+        let mut package_name2 = String::new();
+        let mut version = String::new();
+
+        let mut modified = &mut package_name2;
+
+        for part in file_parts {
+            if part.contains('.') {
+                modified.pop();
+                modified = &mut version;
+            }
+
+            modified.push_str(part);
+            modified.push('-')
+        }
+        modified.pop();
 
         // Ensure that `package_name1` is equal to `package_name2`
         if package_name1 != package_name2 {
@@ -168,7 +188,7 @@ impl NPFManager {
 
         let category = CategoryName::parse(category_name)?;
         let package = PackageName::parse(package_name1)?;
-        let version = Version::parse(version)?;
+        let version = Version::parse(&version)?;
 
         Ok(PackageID::from(
             self.config.name().clone(),
