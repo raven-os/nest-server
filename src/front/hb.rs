@@ -10,7 +10,7 @@ pub fn timeago(
     _: &Handlebars,
     _: &Context,
     _: &mut RenderContext,
-    out: &mut Output,
+    out: &mut dyn Output,
 ) -> HelperResult {
     let maybe_param = h
         .param(0)
@@ -29,7 +29,7 @@ pub fn repository_name(
     _: &Handlebars,
     _: &Context,
     _: &mut RenderContext,
-    out: &mut Output,
+    out: &mut dyn Output,
 ) -> HelperResult {
     let maybe_param = h
         .param(0)
@@ -47,7 +47,7 @@ pub fn category_name(
     _: &Handlebars,
     _: &Context,
     _: &mut RenderContext,
-    out: &mut Output,
+    out: &mut dyn Output,
 ) -> HelperResult {
     let maybe_param = h
         .param(0)
@@ -65,7 +65,7 @@ pub fn package_name(
     _: &Handlebars,
     _: &Context,
     _: &mut RenderContext,
-    out: &mut Output,
+    out: &mut dyn Output,
 ) -> HelperResult {
     let maybe_param = h
         .param(0)
@@ -83,7 +83,7 @@ pub fn capitalize(
     _: &Handlebars,
     _: &Context,
     _: &mut RenderContext,
-    out: &mut Output,
+    out: &mut dyn Output,
 ) -> HelperResult {
     let maybe_param = h
         .param(0)
@@ -105,7 +105,7 @@ pub fn plural(
     _: &Handlebars,
     _: &Context,
     _: &mut RenderContext,
-    out: &mut Output,
+    out: &mut dyn Output,
 ) -> HelperResult {
     let singular = h.param(0);
     let plural = h.param(1);
@@ -130,7 +130,7 @@ pub fn concat(
     _: &Handlebars,
     _: &Context,
     _: &mut RenderContext,
-    out: &mut Output,
+    out: &mut dyn Output,
 ) -> HelperResult {
     for param in h.params() {
         out.write(&param.value().render())?;
@@ -144,7 +144,7 @@ pub fn eq(
     _: &Handlebars,
     _: &Context,
     _: &mut RenderContext,
-    out: &mut Output,
+    out: &mut dyn Output,
 ) -> HelperResult {
     let a = h.param(0);
     let b = h.param(1);
