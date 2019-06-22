@@ -169,15 +169,17 @@ impl NPFManager {
         let mut version = String::new();
 
         let mut modified = &mut package_name2;
+        let mut switched = false;
 
         for part in file_parts {
-            if part.contains('.') {
+            if part.contains('.') && !switched {
                 modified.pop();
                 modified = &mut version;
+                switched = true;
             }
 
             modified.push_str(part);
-            modified.push('-')
+            modified.push('-');
         }
         modified.pop();
 
