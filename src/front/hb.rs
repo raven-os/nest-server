@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use libnest::package::PackageFullName;
+use libnest::package::PackageRequirement;
 use rocket_contrib::templates::handlebars::{
     Context, Handlebars, Helper, HelperResult, JsonRender, Output, RenderContext,
 };
@@ -33,10 +33,10 @@ pub fn repository_name(
 ) -> HelperResult {
     let maybe_param = h
         .param(0)
-        .and_then(|param| serde_json::from_value::<PackageFullName>(param.value().clone()).ok());
+        .and_then(|param| serde_json::from_value::<PackageRequirement>(param.value().clone()).ok());
 
-    if let Some(val) = maybe_param {
-        out.write(val.repository())?;
+    if let Some(val) = maybe_param.as_ref().and_then(|req| req.repository().as_ref()) {
+        out.write(val)?;
     }
 
     Ok(())
@@ -51,7 +51,7 @@ pub fn category_name(
 ) -> HelperResult {
     let maybe_param = h
         .param(0)
-        .and_then(|param| serde_json::from_value::<PackageFullName>(param.value().clone()).ok());
+        .and_then(|param| serde_json::from_value::<PackageRequirement>(param.value().clone()).ok());
 
     if let Some(val) = maybe_param {
         out.write(val.category())?;
@@ -69,10 +69,28 @@ pub fn package_name(
 ) -> HelperResult {
     let maybe_param = h
         .param(0)
-        .and_then(|param| serde_json::from_value::<PackageFullName>(param.value().clone()).ok());
+        .and_then(|param| serde_json::from_value::<PackageRequirement>(param.value().clone()).ok());
 
     if let Some(val) = maybe_param {
         out.write(val.name())?;
+    }
+
+    Ok(())
+}
+
+pub fn version_req(
+    h: &Helper,
+    _: &Handlebars,
+    _: &Context,
+    _: &mut RenderContext,
+    out: &mut dyn Output,
+) -> HelperResult {
+    let maybe_param = h
+        .param(0)
+        .and_then(|param| serde_json::from_value::<PackageRequirement>(param.value().clone()).ok());
+
+    if let Some(val) = maybe_param {
+        out.write(&val.version_requirement().to_string())?;
     }
 
     Ok(())
@@ -151,6 +169,25 @@ pub fn eq(
 
     if let (Some(a), Some(b)) = (a, b) {
         if a.value() == b.value() {
+            out.write("1")?;
+        }
+    }
+
+    Ok(())
+}
+
+pub fn neq(
+    h: &Helper,
+    _: &Handlebars,
+    _: &Context,
+    _: &mut RenderContext,
+    out: &mut dyn Output,
+) -> HelperResult {
+    let a = h.param(0);
+    let b = h.param(1);
+
+    if let (Some(a), Some(b)) = (a, b) {
+        if a.value() != b.value() {
             out.write("1")?;
         }
     }

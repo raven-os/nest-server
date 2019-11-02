@@ -63,8 +63,18 @@
                             {{#each metadata.dependencies }}
                             <tr>
                                 <td class="text-truncate text-white">
-                                    <kbd><b>{{repository_name @key}}::<a href="/p/{{category_name @key}}/{{package_name @key}}" class="text-light-accent">{{category_name @key}}/{{package_name @key}}</a>#{{this}}</b></kbd>
-                                    <br>
+                                    <kbd><b>
+                                        {{#if (repository_name this) }}
+                                            {{repository_name this}}::{{category_name this}}/{{package_name this~}}
+                                        {{~else~}}
+                                            <a href="/p/{{category_name this}}/{{package_name this}}" class="text-light-accent">
+                                                {{category_name this}}/{{package_name this~}}
+                                            </a>
+                                        {{~/if~}}
+                                        {{~#if (neq (version_req this) "*")~}}
+                                            #{{version_req this}}
+                                        {{/if}}
+                                    </b></kbd>
                                 </td>
                             </tr>
                             {{/each}}

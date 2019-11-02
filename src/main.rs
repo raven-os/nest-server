@@ -88,6 +88,9 @@ fn main() {
                     .register_helper("package_name", Box::new(front::hb::package_name));
                 engines
                     .handlebars
+                    .register_helper("version_req", Box::new(front::hb::version_req));
+                engines
+                    .handlebars
                     .register_helper("capitalize", Box::new(front::hb::capitalize));
                 engines
                     .handlebars
@@ -95,6 +98,9 @@ fn main() {
                 engines
                     .handlebars
                     .register_helper("eq", Box::new(front::hb::eq));
+                engines
+                    .handlebars
+                    .register_helper("neq", Box::new(front::hb::neq));
             }))
             .manage(config)
             .manage(npf_manager)
