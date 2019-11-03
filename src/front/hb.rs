@@ -35,7 +35,10 @@ pub fn repository_name(
         .param(0)
         .and_then(|param| serde_json::from_value::<PackageRequirement>(param.value().clone()).ok());
 
-    if let Some(val) = maybe_param.as_ref().and_then(|req| req.repository().as_ref()) {
+    if let Some(val) = maybe_param
+        .as_ref()
+        .and_then(|req| req.repository().as_ref())
+    {
         out.write(val)?;
     }
 
