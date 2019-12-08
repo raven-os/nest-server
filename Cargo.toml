@@ -19,6 +19,8 @@ flate2 = "1.0.7"
 notify = "4.0.10"
 syn = "0.15.33"
 quote = "0.6.12"
+sha2 = "0.8.0"
+data-encoding = "2.1.2"
 
 [dependencies.libnest]
 git = "https://github.com/raven-os/nest"
