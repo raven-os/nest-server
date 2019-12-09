@@ -59,6 +59,7 @@ fn main() {
                     api::package::version::version,
                     api::package::delete::delete,
                     api::package::download::download,
+                    api::package::hash::hash,
                 ],
             )
             .register(catchers![
