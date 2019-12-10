@@ -4,7 +4,8 @@ use std::sync::Arc;
 
 use data_encoding::HEXUPPER;
 use rocket::State;
-use rocket_contrib::json::Json;
+use rocket_contrib::json::JsonValue;
+use serde_json::json;
 use sha2::{Digest, Sha256};
 
 use crate::config::Config;
@@ -16,7 +17,7 @@ pub fn hash(
     category: CategoryNameParam,
     name: PackageNameParam,
     version: VersionParam,
-) -> Option<Json<String>> {
+) -> Option<JsonValue> {
     let path = PathBuf::from(config.package_dir())
         .join(category.value().as_ref())
         .join(name.value().as_ref())
@@ -31,7 +32,9 @@ pub fn hash(
             let mut sha256 = Sha256::default();
             std::io::copy(&mut file, &mut sha256).map(|_| {
                 let hash = sha256.result();
-                Json(HEXUPPER.encode(hash.as_ref()))
+                JsonValue(json!({
+                    "sha256": HEXUPPER.encode(hash.as_ref())
+                }))
             })
         })
         .ok()
